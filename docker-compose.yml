@@ -1,0 +1,42 @@
+version: 3.9
+networks:
+  cindenet:
+    name: cindenet
+    driver: bridge
+
+services:
+  psgre:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - cindenet
+    volumes:
+      - ./psgre:/psgre
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      - cindenet
+    restart: always
+
+  b_end:
+    image: b_end
+    container_name: b_end
+    build:
+      context: ./b_end/dev
+      dockerfile: ./Dockerfile
+      ports:
+        - "3000:3000"
+      volumes:
+        - ./b_end:/b_end
+        - ./b_end/node_modules
+        - /b_end/dist
+        - /b_end/build
+      restart: always
+      networks: cindenet

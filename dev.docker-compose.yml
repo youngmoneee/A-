@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./b_end
+    container_name: backend
+    restart: always
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build: ./f_end
+    container_name: frontend
+    restart: always
+    ports:
+      - "8080:80"
+
+  database:
+    image: postgres:13
+    container_name: database
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  db-data:
