@@ -1,0 +1,81 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend-CI:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 16.x]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Node Set-Up
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache-Dependency
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/b_end/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/b_end/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install Dependency
+      # Cache Hit 실패 시 설치
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npm ci --prefix b_end
+
+    - name: Npm Run Eslint
+      run: npm run lint --prefix b_end
+
+    - name: Build Test
+      run: npm run build --prefix b_end
+
+
+  frontend-CI:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 16.x]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Node Set-Up
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache-Dependency
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/f_end/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/f_end/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install Dependency
+      # Cache Hit 실패 시 설치
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npm ci --prefix f_end
+
+    - name: Npm Run Eslint
+      run: npm run lint --prefix f_end
+
+    - name: Build Test
+      run: npm run build --prefix f_end

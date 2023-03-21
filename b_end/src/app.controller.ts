@@ -10,6 +10,6 @@ export class AppController {
   @ApiOperation({ summary: 'Check User', description: "Check User's Auth" })
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return 'hello';
   }
 }
