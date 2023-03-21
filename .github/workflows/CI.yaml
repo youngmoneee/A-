@@ -33,19 +33,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: cd Workspace
-      run: cd b_end
-
     - name: Install Dependency
       # Cache Hit 실패 시 설치
       if: steps.cache.outputs.cache-hit != 'true'
-      run: npm ci
+      run: npm ci --prefix b_end
 
     - name: Npm Run Eslint
-      run: npm run lint
+      run: npm run lint --prefix b_end
 
     - name: Build Test
-      run: npm run build
+      run: npm run build --prefix b_end
 
 
   frontend-CI:
@@ -64,9 +61,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: cd Workspace
-      run: cd f_end
-
     - name: Cache-Dependency
       uses: actions/cache@v3
       with:
@@ -78,10 +72,10 @@ jobs:
     - name: Install Dependency
       # Cache Hit 실패 시 설치
       if: steps.cache.outputs.cache-hit != 'true'
-      run: npm ci
+      run: npm ci --prefix f_end
 
     - name: Npm Run Eslint
-      run: npm run lint
+      run: npm run lint --prefix f_end
 
     - name: Build Test
-      run: npm run build
+      run: npm run build --prefix f_end
