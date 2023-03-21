@@ -29,7 +29,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/b_end/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/b_end/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
 
@@ -71,7 +71,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/f_end/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/f_end/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
 
