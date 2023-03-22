@@ -28,9 +28,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/b_end/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/b_end/package-lock.json') }}-${{ hashFiles('**/b_end/package.json') }}
+        key: ${{ runner.os }}-backend-${{ hashFiles('**/b_end/package-lock.json') }}-${{ hashFiles('**/b_end/package.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-
+          ${{ runner.os }}-backend-
 
     - name: Install Dependency
       # Cache Hit 실패 시 설치
@@ -64,9 +64,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/f_end/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/f_end/package-lock.json') }}-${{ hashFiles('**/f_end/package.json') }}
+        key: ${{ runner.os }}-frontend-${{ hashFiles('**/f_end/package-lock.json') }}-${{ hashFiles('**/f_end/package.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-
+          ${{ runner.os }}-frontend-
 
     - name: Install Dependency
       # Cache Hit 실패 시 설치
