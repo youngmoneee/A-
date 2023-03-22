@@ -5,8 +5,7 @@ on:
     branches:
       - dev
   pull_request:
-    branches:
-      - main
+    branches: [main, dev]
 
 jobs:
   backend-CI:
@@ -29,7 +28,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/b_end/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/b_end/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/b_end/package-lock.json') }}-${{ hashFiles('**/b_end/package.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
 
@@ -65,7 +64,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/f_end/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/f_end/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/f_end/package-lock.json') }}-${{ hashFiles('**/f_end/package.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
 
