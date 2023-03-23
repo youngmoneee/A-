@@ -4,13 +4,13 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
 import { OauthProvider } from '../../dto/enum.provider';
-import { JwtService } from '@nestjs/jwt';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor(
     private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
   ) {
     super({
       clientID: configService.get('K_CLIENT_ID'),
@@ -32,7 +32,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       userEmail: profile._json.kakao_account.email,
       userImage: profile._json.properties.profile_image,
     };
-    const jwtToken = this.jwtService.sign(user);
+    const jwtToken = this.authService.generateToken(user);
+
     return done(null, jwtToken);
   }
 }
