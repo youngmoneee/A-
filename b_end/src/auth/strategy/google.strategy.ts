@@ -4,10 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
 import { OauthProvider } from '../../dto/enum.provider';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+  ) {
     super({
       clientID: configService.get('G_CLIENT_ID'),
       clientSecret: configService.get('G_SECRET'),
@@ -29,6 +33,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       userEmail: profile.emails[0].value,
       userImage: profile.photos[0].value,
     };
-    return cb(null, user);
+    const jwtToken = this.jwtService.sign(user);
+    return cb(null, jwtToken);
   }
 }
