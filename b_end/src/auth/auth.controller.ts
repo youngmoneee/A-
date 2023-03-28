@@ -1,14 +1,29 @@
-import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation } from '@nestjs/swagger';
-import { UserDto } from '../dto/user.dto';
-import { GetUser } from '../user/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './decorator/token.decorator';
+import { LocalJwtGuard } from './auth.guard';
 
 @Controller('oauth')
 export class AuthController {
   private logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
+
+  @Get()
+  @UseGuards(LocalJwtGuard)
+  getUser(@Req() req) {
+    return req.headers;
+  }
 
   @ApiOperation({
     summary: '로그인',
@@ -16,9 +31,7 @@ export class AuthController {
   })
   @Get('kakao')
   @UseGuards(AuthGuard('kakao'))
-  kakaoLogin() {
-    this.logger.log('Login Failed');
-  }
+  kakaoLogin() {}
 
   @ApiOperation({
     summary: '카카오 로그인 콜백',
@@ -27,8 +40,15 @@ export class AuthController {
   })
   @Get('kakao/cb')
   @UseGuards(AuthGuard('kakao'))
-  kakaoCallback(@GetUser() user: UserDto) {
-    return user;
+  kakaoCallback(@Res() res, @GetUser() user) {
+    if (!user) throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    const token = this.authService.generateToken(user);
+    res.cookie(
+      this.authService.getTokenId(),
+      token,
+      this.authService.getTokenOptions(),
+    );
+    return res.redirect('/');
   }
 
   @ApiOperation({
@@ -37,9 +57,7 @@ export class AuthController {
   })
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  googleLogin() {
-    this.logger.log('Login Failed');
-  }
+  googleLogin() {}
 
   @ApiOperation({
     summary: '구글 로그인 콜백',
@@ -48,7 +66,14 @@ export class AuthController {
   })
   @Get('google/cb')
   @UseGuards(AuthGuard('google'))
-  googleCallback(@GetUser() user: UserDto) {
-    return user;
+  googleCallback(@Res() res, @GetUser() user) {
+    if (!user) throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    const token = this.authService.generateToken(user);
+    res.cookie(
+      this.authService.getTokenId(),
+      token,
+      this.authService.getTokenOptions(),
+    );
+    return res.redirect('/');
   }
 }
