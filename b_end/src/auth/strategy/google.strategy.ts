@@ -33,7 +33,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       userEmail: profile.emails[0].value,
       userImage: profile.photos[0].value,
     };
-    const jwtToken = this.authService.generateToken(user);
-    return done(null, jwtToken);
+    return done(null, user);
   }
 }

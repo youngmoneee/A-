@@ -2,17 +2,22 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
+import { Injectable } from '@nestjs/common';
+import { AuthService } from '../auth.service';
 
-export class JwtStrategy extends PassportStrategy(Strategy, 'local-jwt') {
-  constructor(private readonly configService: ConfigService) {
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: true,
-      secretOrKey: configService.get('JWT_SECRET'),
+      ignoreExpiration: true, //  토큰 만료 기간 control을 위해 true로
+      secretOrKey: configService.get('JWT_SECRET'), //  토큰 검증
     });
   }
   async validate(payload: any) {
-    console.log(payload);
     return payload as UserDto;
   }
 }

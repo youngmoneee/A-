@@ -32,8 +32,6 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       userEmail: profile._json.kakao_account.email,
       userImage: profile._json.properties.profile_image,
     };
-    const jwtToken = this.authService.generateToken(user);
-
-    return done(null, jwtToken);
+    return done(null, user);
   }
 }
