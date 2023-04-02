@@ -1,11 +1,19 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <div>
+    <SideNav />
+  </div>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue';
+import SideNav from '@/components/SideBar.vue';
+
+export default defineComponent({
+  components: {
+    SideNav,
+  },
+});
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
