@@ -1,17 +1,22 @@
 <template>
   <div class="nav-bar">
     <div
-      v-for="(item, idx) in navbar.length"
+      v-for="(item, idx) in navbar"
       :key="item"
       class="nav-item"
       :style="{ backgroundColor: colour[idx % colour.length] }"
+      @click="navbar.push(navbar[idx])"
     >
-      <div class="nav-content">{{ navbar[idx] }}</div>
+      <div
+        class="nav -content"
+      > {{ item }} </div
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts">
+
 export default {
   name: 'SideNav',
   data() {
@@ -19,6 +24,8 @@ export default {
       navbar: ['PosA', 'PosB', 'PosC', 'PosD', 'PosE'],
       colour: ['red', 'blue', 'yellow'],
     };
+  },
+  methods: {
   },
 };
 </script>
