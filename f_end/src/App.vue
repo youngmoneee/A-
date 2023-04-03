@@ -1,16 +1,25 @@
 <template>
   <div>
     <SideNav />
+    <LoginModal />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SideNav from '@/components/SideBar.vue';
+import LoginModal from '@/components/login/login.modal.vue';
+
 
 export default defineComponent({
   components: {
+    LoginModal,
     SideNav,
+  },
+  data() {
+    return {
+      authed: false,
+    };
   },
 });
 </script>
@@ -22,17 +31,10 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
 }
-
-nav {
-  padding: 30px;
+body {
+  margin: 0px;
 }
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+div {
+  box-sizing: border-box;
 }
 </style>
