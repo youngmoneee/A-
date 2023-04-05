@@ -4,10 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
 import { OauthProvider } from '../../dto/enum.provider';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
-  constructor(configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService,
+  ) {
     super({
       clientID: configService.get('K_CLIENT_ID'),
       clientSecret: configService.get('K_SECRET'), // clientSecret을 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
@@ -28,7 +32,6 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       userEmail: profile._json.kakao_account.email,
       userImage: profile._json.properties.profile_image,
     };
-
     return done(null, user);
   }
 }
