@@ -28,6 +28,8 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.2.1",
     "@types/passport-jwt": "^3.0.8",
+    "@nestjs/microservices": "^9.3.12",
+    "mqtt": "^4.3.7",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
