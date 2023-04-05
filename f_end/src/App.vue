@@ -5,23 +5,10 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup>
 import SideNav from '@/components/SideBar.vue';
-import LoginModal from '@/components/login/login.modal.vue';
+import LoginModal from '@/components/login/LoginModal.vue';
 
-
-export default defineComponent({
-  components: {
-    LoginModal,
-    SideNav,
-  },
-  data() {
-    return {
-      authed: false,
-    };
-  },
-});
 </script>
 <style>
 #app {

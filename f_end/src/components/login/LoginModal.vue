@@ -1,12 +1,12 @@
 <template>
-  <div v-if='authed !== true' class='bg-black'>
+  <div v-if='!authed' class='bg-black'>
     <div class="bg-white">
       <h1> L o g i n </h1>
       <KakaoButton class='button'/>
       <GoogleButton class='button'/>
       <div
         class='close'
-        @click='authed = !authed'
+        @click='closeModal'
       >
         close
       </div>
@@ -14,20 +14,14 @@
   </div>
 </template>
 
-<script>
-import KakaoButton from '@/components/login/kakao.button.vue';
-import GoogleButton from '@/components/login/google.button.vue';
-export default {
-  name: 'LoginModal',
-  components: {
-    KakaoButton,
-    GoogleButton,
-  },
-  data() {
-    return {
-      authed: false,
-    };
-  }
+<script setup>
+import { ref } from 'vue';
+import KakaoButton from '@/components/login/KakaoButton.vue';
+import GoogleButton from '@/components/login/GoogleButton.vue';
+
+const authed = ref(false);
+const closeModal = () => {
+  authed.value = true;
 };
 </script>
 
