@@ -7,13 +7,17 @@ services:
     restart: always
     ports:
       - "3000:3000"
+    volumes:
+      - ./b_end:/usr/src/app
 
   frontend:
     build: ./f_end
     container_name: frontend
     restart: always
     ports:
-      - "8080:80"
+      - "8080:8080"
+    volumes:
+      - ./f_end:/usr/src/app
 
   database:
     image: postgres:13
