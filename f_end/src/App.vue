@@ -1,7 +1,7 @@
 <template>
   <div>
     <SideNav />
-    <LoginModal />
+    <LoginModal v-if='!$auth.isAuthed()' />
   </div>
 </template>
 
@@ -11,14 +11,10 @@ import LoginModal from '@/components/login/LoginModal.vue';
 import { useAuthStore } from '@/store/auth';
 import { onMounted } from 'vue';
 
-const authStore = useAuthStore();
+const $auth = useAuthStore();
 onMounted(() => {
-  const token = document.cookie.split(';')
-    .map((kv) => kv.split('='))
-      .map(([k, v]) => [k.trim(), v.trim()])
-    .find(([k]) => k === 'DEV_TOKEN');
-  authStore.token = token ? token[1] : null;
-  authStore.logToken();
+  //  TODO : 인덱스 페이지 접속 시, 토큰 값 파싱하나 최적화 필요
+  $auth.parseToken();
 });
 </script>
 <style>
