@@ -23,7 +23,8 @@ export class AuthInterceptor implements NestInterceptor {
 
     if (!token) throw new UnauthorizedException();
     //  token을 응답 헤더의 authorization에 담아 클라이언트에게 전송
-    res.setHeader('Authorization', `Bearer ${token}`);
+    //req.setHeader(this.authService.getTokenId(), token);
+    res.cookie(this.authService.getTokenId(), token);
     return next.handle();
   }
 }

@@ -50,7 +50,7 @@ export class AuthController {
   @UseGuards(KakaoGuard)
   @UseInterceptors(AuthInterceptor)
   kakaoCallback(@Res() res) {
-    return res.redirect('/');
+    return res.redirect('http://localhost');
   }
 
   @ApiOperation({
@@ -72,6 +72,6 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   @UseInterceptors(AuthInterceptor)
   googleCallback(@Res() res) {
-    return res.redirect('/');
+    return res.redirect('http://localhost');
   }
 }

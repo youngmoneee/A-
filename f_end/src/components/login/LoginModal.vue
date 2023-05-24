@@ -1,9 +1,10 @@
 <template>
-  <div v-if='!authed' class='bg-black'>
+  <div v-if='!$auth.isAuthenticated' class='bg-black'>
     <div class="bg-white">
       <h1> L o g i n </h1>
       <KakaoButton class='button'/>
       <GoogleButton class='button'/>
+      <p>{{ $auth.token }}</p>
       <div
         class='close'
         @click='closeModal'
@@ -15,13 +16,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import KakaoButton from '@/components/login/KakaoButton.vue';
 import GoogleButton from '@/components/login/GoogleButton.vue';
+import { useAuthStore } from '@/store/auth';
 
-const authed = ref(false);
+const $auth = useAuthStore();
 const closeModal = () => {
-  authed.value = true;
+  $auth.isAuthenticated = true;
+  $auth.logToken();
 };
 </script>
 
