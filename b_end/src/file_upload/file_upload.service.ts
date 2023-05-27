@@ -1,5 +1,4 @@
-import { Injectable, UploadedFile } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class FileUploadService {
