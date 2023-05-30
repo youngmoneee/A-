@@ -6,6 +6,7 @@ import { DevConfigModule } from './config/dev.config.module';
 import { AuthModule } from './auth/auth.module';
 import { MqttModule } from './mqtt/mqtt.module';
 import { FileUploadModule } from './file_upload/file_upload.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FileUploadModule } from './file_upload/file_upload.module';
     AuthModule,
     MqttModule,
     FileUploadModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
