@@ -48,5 +48,12 @@ services:
       - "1883:1883"
       - "9001:9001"
 
+  mongo:
+    build: ./mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+
 volumes:
   db-data:
