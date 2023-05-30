@@ -7,10 +7,11 @@ import { v4 as uuidv4 } from 'uuid';
   imports: [
     MulterModule.register({
       storage: diskStorage({
-        destination: '@/uploads',
+        destination: '../../uploads',
         filename: (req, file, cb) => {
           //  unique fileName
           const fileName = `${file.fieldname}-${uuidv4()}`;
+          console.log('fileName::', fileName);
           cb(null, fileName);
         },
       }),
