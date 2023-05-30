@@ -1,7 +1,7 @@
 FROM node:18
 
 WORKDIR /usr/src/app
-
+# package 복사, 또 뭐필요하지
 COPY package*.json ./
 
 RUN npm install
