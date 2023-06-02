@@ -5,12 +5,16 @@ import {
   Logger,
   Post,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from '../user/user.decorator';
+import { GetToken } from '../auth/auth.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Chat } from '../entity/chat.schema';
 import { ChatService } from './chat.service';
+import { UserDto } from '../dto/user.dto';
+import { CreateChatDto } from '../dto/createChatDto';
 
 @Controller('chat')
 export class ChatController {
@@ -24,19 +28,18 @@ export class ChatController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async sendMessage(
-    @GetUser() sender: string,
-    @UploadedFile() files,
+    @GetUser() user: UserDto,
+    @UploadedFile() file: Express.Multer.File,
     @Body('msg') msg,
   ) {
     this.logger.debug(`Called ${this.sendMessage.name}`);
-    console.log('Sender::', sender);
-    console.log('File::', files);
-    console.log('Message::', msg);
-    const chat: Chat = {
-      user: sender,
-      msg: msg,
-      imgUrl: files,
+    const createChatDto: CreateChatDto = {
+      user,
+      msg,
+      imgUrl: file.path,
     };
-    return await this.chatService.create(chat);
+    console.log('ChatDto::', createChatDto);
+    console.log(file);
+    return await this.chatService.create(createChatDto);
   }
 }

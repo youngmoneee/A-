@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { UserDto } from '../dto/user.dto';
 
 export type ChatDocument = HydratedDocument<Chat>;
 
 @Schema({ collection: 'Chattings' })
 export class Chat {
   @Prop()
-  user: string;
+  user: UserDto;
 
   @Prop()
   msg?: string;
