@@ -1,19 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { UserDto } from '../dto/user.dto';
+import { HydratedDocument } from 'mongoose';
 
-export type ChatDocument = Chat & Document;
+export type ChatDocument = HydratedDocument<Chat>;
 
-@Schema()
+@Schema({ collection: 'Chattings' })
 export class Chat {
   @Prop()
-  user: UserDto;
+  user: string;
 
   @Prop()
   msg?: string;
 
   @Prop()
-  img?: Express.Multer.File;
+  imgUrl?: string;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
