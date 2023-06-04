@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import { ChatGateway } from './chat.gateway';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { v4 as uuidv4 } from 'uuid';
     }),
   ],
   controllers: [ChatController],
-  providers: [ChatService],
+  providers: [ChatService, ChatGateway],
 })
 export class ChatModule {}
