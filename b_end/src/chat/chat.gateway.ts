@@ -9,12 +9,13 @@ import { Server, Socket } from 'socket.io';
 import { GetUser } from '../user/user.decorator';
 import { UserDto } from '../dto/user.dto';
 import { CreateChatDto } from '../dto/createChatDto';
+import { Chat } from '../entity/chat.schema';
 
 export enum eContent {
   TEXT,
   IMAGE,
 }
-interface IChat {
+export interface IChat {
   userName?: string;
   userImg?: string;
   data: string;
@@ -34,14 +35,14 @@ export class ChatGateway implements OnGatewayConnection {
     client.emit('chat', { chat });
   }
 
-  publish(chatDto: CreateChatDto) {
-    const chat: IChat = {
-      userName: chatDto.user.userName,
-      userImg: chatDto.user.userImage,
-      data: chatDto.msg !== null ? chatDto.msg : chatDto.imgUrl,
-      chatType: chatDto.msg !== null ? eContent.TEXT : eContent.IMAGE,
+  publish(chat: Chat) {
+    const newChat: IChat = {
+      userName: chat.user?.userName,
+      userImg: chat.user?.userImage,
+      data: chat.msg === null ? chat.imgUrl : chat.msg,
+      chatType: chat.msg === null ? eContent.IMAGE : eContent.TEXT,
     };
-    this.server.emit('chat', { chat });
+    this.server.emit('chat', { newChat });
   }
   @SubscribeMessage('message')
   handleMessage(client: any, payload: any): string {

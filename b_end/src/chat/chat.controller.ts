@@ -5,13 +5,10 @@ import {
   Logger,
   Post,
   UploadedFile,
-  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from '../user/user.decorator';
-import { GetToken } from '../auth/auth.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Chat } from '../entity/chat.schema';
 import { ChatService } from './chat.service';
 import { UserDto } from '../dto/user.dto';
 import { CreateChatDto } from '../dto/createChatDto';
@@ -36,7 +33,7 @@ export class ChatController {
     const createChatDto: CreateChatDto = {
       user,
       msg,
-      imgUrl: file.path,
+      imgUrl: file?.path,
     };
     console.log('ChatDto::', createChatDto);
     console.log(file);
