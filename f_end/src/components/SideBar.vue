@@ -21,7 +21,7 @@ export default {
   name: 'SideNav',
   data() {
     return {
-      navbar: ['PosA', 'PosB', 'PosC', 'PosD', 'PosE'],
+      navbar: ['A', 'B', 'C', 'D', 'E'],
       colour: ['red', 'blue', 'yellow'],
     };
   },
@@ -35,7 +35,6 @@ export default {
 .nav-bar {
   display: flex;
   flex-direction: column;
-  position: fixed;
   justify-content: center;
   align-items: center;
   top: 0px;
@@ -46,6 +45,7 @@ export default {
 .nav-item {
   margin: 0px;
   padding: 10px;
+  width: 100%;
   /**
    * flex-basis를 통해 기본 크기를 0으로 설정, flex-grow=1 옵션을 통해 나머지 공간을 균등하게 분배 -->
    */
@@ -53,6 +53,7 @@ export default {
   flex-grow: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .nav-content {
   margin: 0;
