@@ -2,7 +2,7 @@
   <div class='chat-send'>
     <textarea v-model="text" placeholder="Enter text"></textarea>
     <label class="file-input-label">
-      <input ref="fileInput" type="file" style="display: none" @change="onFileChange" />
+      <input ref="fileRef" type="file" style="display: none" @change="onFileChange" />
       파일 선택
     </label>
     <button @click="submit">전송</button>
@@ -10,16 +10,37 @@
 </template>
 <script setup>
 import { useChatStore } from '@/store/chat';
+import axios from 'axios';
+import { useAuthStore } from '@/store/auth';
 
 const $chat = useChatStore();
+const $auth = useAuthStore();
 let text = '';
+let fileInput = null;
 
-const onFileChange = (e) => {
-  // 파일 선택 로직 추가
+const onFileChange = async (e) => {
+  fileInput = e.target.files[0];
+  console.log(fileInput);
 };
 
-const submit = () => {
-  // 전송 로직 추가
+const submit = async () => {
+  if (!text && !fileInput) return ;
+  const form = new FormData();
+  if (fileInput !== null) form.append('file', fileInput);
+  if (text !== '') form.append('msg', text);
+  console.log(form);
+  try {
+    const res = await axios.post('/api/chat', form, {
+      headers: {
+        Authorization: `Bearer ${$auth.token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    text = '';
+    fileInput = null;
+  } catch (e) {
+    console.log(e);
+  }
 };
 </script>
 
@@ -28,6 +49,7 @@ const submit = () => {
   width: 100%;
   display: flex;
   flex-direction: row;
+  flex-basis: 0;
 }
 textarea {
   height: 20px;
