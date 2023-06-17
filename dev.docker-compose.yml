@@ -9,6 +9,8 @@ services:
       - "3000:3000"
     volumes:
       - ./b_end:/usr/src/app
+    depends_on:
+      - mongo
 
   frontend:
     build: ./f_end
