@@ -1,6 +1,6 @@
 <template>
   <div class='main-container'>
-  <ChatDiv />
+    <ChatDiv />
   </div>
 </template>
 
@@ -10,8 +10,6 @@ import ChatDiv from '@/components/chat/ChatDiv.vue';
 
 <style scoped>
 .main-container {
-  display: flex;
-  flex-direction: column-reverse;
   width: 100%;
 }
 </style>

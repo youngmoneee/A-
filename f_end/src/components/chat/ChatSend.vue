@@ -1,8 +1,8 @@
 <template>
   <div class='chat-send'>
-    <textarea v-model="text" placeholder="Enter text"></textarea>
+    <textarea v-model="text" placeholder="Enter text" @keyup.enter.prevent='keySubmit' @keydown.shift.enter.prevent='addNewLine' />
     <label class="file-input-label">
-      <input ref="fileRef" type="file" style="display: none" @change="onFileChange" />
+      <input type="file" style="display: none" @change="onFileChange" />
       파일 선택
     </label>
     <button @click="submit">전송</button>
@@ -10,49 +10,55 @@
 </template>
 <script setup>
 import { useChatStore } from '@/store/chat';
-import axios from 'axios';
 import { useAuthStore } from '@/store/auth';
+import axios from 'axios';
+import { ref } from 'vue';
 
 const $chat = useChatStore();
 const $auth = useAuthStore();
-let text = '';
-let fileInput = null;
+let text = ref('');
+let fileRef = ref(null);
 
-const onFileChange = async (e) => {
-  fileInput = e.target.files[0];
-  console.log(fileInput);
+const onFileChange = (e) => {
+  fileRef.value = e.target.files[0];
 };
 
 const submit = async () => {
-  if (!text && !fileInput) return ;
+  if (!text.value.trim() && !fileRef.value) return ;
   const form = new FormData();
-  if (fileInput !== null) form.append('file', fileInput);
-  if (text !== '') form.append('msg', text);
-  console.log(form);
-  try {
-    const res = await axios.post('/api/chat', form, {
-      headers: {
-        Authorization: `Bearer ${$auth.token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    text = '';
-    fileInput = null;
-  } catch (e) {
-    console.log(e);
-  }
+  if (text.value.trim()) form.append('msg', text.value);
+  if (fileRef.value) form.append('file', fileRef.value);
+  text.value = '';
+  fileRef.value = null;
+  await axios.post('/api/chat', form, {
+    headers: {
+      Authorization: `Bearer ${$auth.token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  }).then(() => {
+    text.value = '';
+    fileRef.value = null;
+  }).catch((e) => console.log(e));
 };
+
+const keySubmit = async (e) => {
+  if (!e.shiftKey) await submit();
+};
+
+const addNewLine = () => {
+  text.value += '\n';
+}
+
 </script>
 
 <style scoped>
 .chat-send {
   width: 100%;
+  height: 40px;
   display: flex;
-  flex-direction: row;
-  flex-basis: 0;
+  align-items: stretch;
 }
 textarea {
-  height: 20px;
   width: 80%;
   resize: none;
   padding: 8px;
@@ -65,6 +71,7 @@ textarea {
   flex: 1;
   margin-left: 1px;
   padding: 8px 16px;
+  display: flex;
   align-items: center;
   justify-content: center;
   border: none;

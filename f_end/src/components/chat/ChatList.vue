@@ -5,9 +5,14 @@
         <img :src="item.userImg" class="user-img" />
         <span class="user-name">{{ item.userName }} :</span>
       </div>
-      <div v-if='item.msg' class="message">{{ item.msg }}</div>
-      <div v-if='item.fileUrl' class="message">
-        <img :src='item.fileUrl' />
+      <div class='message'>
+        <div v-if='item.fileUrl'>
+          <!--img v-if='item.fileUrl' :src='item.fileUrl' class='chat-img'/-->
+          <img :src='item.fileUrl' class='chat-img'/>
+        </div>
+        <div v-for="(line, idx) in item.msg?.split('\n')" :key='idx' class='line'>
+          {{ line }}
+        </div>
       </div>
     </li>
   </div>
@@ -40,7 +45,8 @@ onMounted(() => {
   margin-right: 10px;
 }
 .user-img {
-  height: 100%;
+  height: 30px;
+  width: 30px;
   object-fit: cover;
   border-radius: 3px;
   margin-right: 5px;
@@ -52,18 +58,28 @@ onMounted(() => {
 .message {
   flex-grow: 1;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+.line {
+  word-wrap: break-word;
 }
 .chat-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   flex-grow: 1;
-  overflow-y: auto;
+  max-height: calc(100vh - 40px);
 }
 .chat-item {
-  height: 30px;
   width: 100%;
   background-color: lightgray;
   padding: 5px;
   list-style-type: none;
   display: flex;
   align-items: center;
+}
+.chat-img {
+  max-height: 240px;
 }
 </style>
