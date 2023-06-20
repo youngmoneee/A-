@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MqttController } from './mqtt.controller';
+import { MqttService } from './mqtt.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+    /*
     ClientsModule.register([
       {
         name: 'MqttClient', //  Mqtt 클라이언트 이름
@@ -15,7 +17,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         },
       },
     ]),
+    */
   ],
   controllers: [MqttController],
+  providers: [MqttService],
 })
 export class MqttModule {}
