@@ -47,7 +47,6 @@ export class ChatController {
       msg,
       fileUrl: file?.path,
     };
-    if (file) this.logger.log(`File : ${file.path}`);
     const res = await this.chatService.create(chatSchema);
     this.chatGateway.publish(res);
   }
