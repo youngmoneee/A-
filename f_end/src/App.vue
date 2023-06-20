@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class='index'>
     <SideNav />
     <LoginModal v-if='!$auth.isAuthed()' />
+    <MainContainer />
   </div>
 </template>
 
@@ -10,6 +11,7 @@ import SideNav from '@/components/SideBar.vue';
 import LoginModal from '@/components/login/LoginModal.vue';
 import { useAuthStore } from '@/store/auth';
 import { onMounted } from 'vue';
+import MainContainer from '@/components/MainContainer.vue';
 
 const $auth = useAuthStore();
 onMounted(() => {
@@ -27,8 +29,12 @@ onMounted(() => {
 }
 body {
   margin: 0px;
+  overflow: hidden;
 }
 div {
   box-sizing: border-box;
+}
+.index {
+  display: flex;
 }
 </style>

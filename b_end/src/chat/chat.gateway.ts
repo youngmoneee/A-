@@ -8,41 +8,32 @@ import {
 import { Server, Socket } from 'socket.io';
 import { GetUser } from '../user/user.decorator';
 import { UserDto } from '../dto/user.dto';
-import { CreateChatDto } from '../dto/createChatDto';
-import { Chat } from '../entity/chat.schema';
+import { Chat, CreateChatDto, IChat } from '../dto/createChatDto';
+import { Logger } from '@nestjs/common';
 
-export enum eContent {
-  TEXT,
-  IMAGE,
-}
-export interface IChat {
-  userName?: string;
-  userImg?: string;
-  data: string;
-  chatType: eContent;
-}
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: 'localhost',
+  },
+})
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
-
+  private readonly logger = new Logger(ChatGateway.name);
   handleConnection(client: Socket, @GetUser() user: UserDto) {
-    const chat: IChat = {
-      //  data: `Hi ${user.userName}`,
-      data: 'hi',
-      chatType: eContent.TEXT,
-    };
-    client.emit('chat', { chat });
+    const msg = `Hi ${user?.userName}`;
+    client.emit('hello', msg);
   }
 
-  publish(chat: Chat) {
-    const newChat: IChat = {
-      userName: chat.user?.userName,
-      userImg: chat.user?.userImage,
-      data: chat.msg === null ? chat.imgUrl : chat.msg,
-      chatType: chat.msg === null ? eContent.IMAGE : eContent.TEXT,
+  publish(chatSchema: Chat) {
+    const chat: IChat = {
+      userName: chatSchema.user.userName,
+      userImg: chatSchema.user.userImage,
+      fileUrl: chatSchema.fileUrl,
+      msg: chatSchema.msg,
     };
-    this.server.emit('chat', { newChat });
+    this.logger.debug(`Called ${this.publish.name}`);
+    this.server.emit('chat', chat);
   }
   @SubscribeMessage('message')
   handleMessage(client: any, payload: any): string {

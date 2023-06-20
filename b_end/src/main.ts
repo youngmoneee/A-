@@ -20,7 +20,7 @@ async function bootstrap() {
   const corsOptions: CorsOptions = {
     origin: app.get(ConfigService).get('FE_HOST'),
     methods: 'GET, PUT, POST, DELETE',
-    allowedHeaders: 'Content-Type',
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   };
   app.enableCors(corsOptions);
