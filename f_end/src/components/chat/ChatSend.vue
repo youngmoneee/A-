@@ -5,7 +5,10 @@
       <input type="file" style="display: none" @change="onFileChange" />
       파일 선택
     </label>
-    <button @click="submit">전송</button>
+    <label class="submit-label">
+      <button style='display: none' @click="submit" />
+      전송
+    </label>
   </div>
 </template>
 <script setup>
@@ -53,13 +56,12 @@ const addNewLine = () => {
 
 <style scoped>
 .chat-send {
-  width: 100%;
-  height: 40px;
+  flex-basis: 30px;
   display: flex;
   align-items: stretch;
 }
 textarea {
-  width: 80%;
+  flex-grow: 8;
   resize: none;
   padding: 8px;
   border: 1px solid #ccc;
@@ -67,13 +69,11 @@ textarea {
   outline: none;
 }
 
-.file-input-label, button {
-  flex: 1;
+.file-input-label, .submit-label {
+  flex-grow: 1;
+  flex-basis: 0;
   margin-left: 1px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 16px 8px;
   border: none;
   cursor: pointer;
   border-radius: 4px;
@@ -87,10 +87,10 @@ textarea {
   background-color: #0020ec;
 }
 
-button {
+.submit-label {
   background-color: #4caf50;
 }
-button:hover {
+.submit-label:hover {
   background-color: #45a049;
 }
 </style>

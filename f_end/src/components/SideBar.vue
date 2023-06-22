@@ -39,7 +39,8 @@ export default {
   align-items: center;
   top: 0px;
   left: 0px;
-  width: 50px;
+  flex-basis: 50px;
+  flex-shrink: 0;
   height: 100vh;
 }
 .nav-item {
