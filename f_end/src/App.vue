@@ -7,17 +7,20 @@
 </template>
 
 <script setup>
+import { onMounted, provide } from 'vue';
 import SideNav from '@/components/SideBar.vue';
 import LoginModal from '@/components/login/LoginModal.vue';
 import { useAuthStore } from '@/store/auth';
-import { onMounted } from 'vue';
 import MainContainer from '@/components/MainContainer.vue';
-
+import { io } from 'socket.io-client';
 const $auth = useAuthStore();
+
+provide('socket', io('/'));
 onMounted(() => {
   //  TODO : 인덱스 페이지 접속 시, 토큰 값 파싱하나 최적화 필요
   $auth.parseToken();
 });
+
 </script>
 <style>
 #app {
