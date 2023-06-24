@@ -7,15 +7,15 @@
 <script setup lang='ts'>
 import { useChatStore } from '@/store/chat';
 import { IChat } from '@/interface/chat';
-import { onMounted } from 'vue';
-import { io } from 'socket.io-client';
+import { inject, onMounted } from 'vue';
 import ChatItem from '@/components/chat/ChatItem.vue';
 
 const chat = useChatStore();
-const chatSock = io('/');
+const chatSock: any = inject('socket',);
 
 onMounted(() => {
   //  Chat, File Event establish
+  if (!chatSock) throw new Error('Socket Error');
   chatSock.on('hello', (data : string) => {
     console.log(data);
   }).on('chat', ( data: IChat ) => {
