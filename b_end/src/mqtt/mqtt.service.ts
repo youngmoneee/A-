@@ -4,6 +4,10 @@ import * as mqtt from 'mqtt';
 @Injectable()
 export class MqttService implements OnModuleInit {
   private client: mqtt.MqttClient;
+  private topics;
+  constructor() {
+    this.topics = new Map<string, Array<string | number>>();
+  }
   onModuleInit() {
     this.client = mqtt.connect('mqtt://mosquitto:1883', { username: 'nest' });
     this.client.on('connect', () => {
@@ -27,5 +31,13 @@ export class MqttService implements OnModuleInit {
         console.error('Failed to publish:', err);
       }
     });
+  }
+
+  topicList(): Array<string> {
+    return Array.from(this.topics.keys());
+  }
+  topicRegister(topic: string) {
+    if (this.topics.has(topic)) return;
+    this.topics.set(topic, []);
   }
 }
