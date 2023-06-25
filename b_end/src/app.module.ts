@@ -19,6 +19,6 @@ import { MqttService } from './mqtt/mqtt.service';
     MongooseModule.forRoot('mongodb://mongo:27017'),
   ],
   controllers: [AppController],
-  providers: [AppService, MqttService],
+  providers: [AppService],
 })
 export class AppModule {}
