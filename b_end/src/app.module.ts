@@ -7,7 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { MqttModule } from './mqtt/mqtt.module';
 import { ChatModule } from './chat/chat.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MqttService } from './mqtt/mqtt.service';
 
 @Module({
   imports: [

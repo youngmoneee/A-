@@ -12,20 +12,22 @@ export const useCensorData = defineStore('censor', {
   }),
   actions: {
     addNewTopic(topic: string) {
-      if (this.censorData.has(topic)) return ;
+      if (this.censorData.has(topic)) return;
       this.censorData.set(topic, []);
     },
     async setAllTopic() {
       try {
         const response = await axios.get('/api/mqtt/topic');
-        for (const key in response.data.key)
-          this.addNewTopic(key);
+        response.data.forEach((topic: string) => {
+          this.addNewTopic(topic);
+        });
       } catch (e) {
         console.error(e);
       }
     },
     updateTopic(topic: string, data: string | number) {
-      const newData: Array<string | number> = this.censorData.get(topic)?.slice() || [];
+      const newData: Array<string | number> =
+        this.censorData.get(topic)?.slice() || [];
       if (newData.length >= this.dataLength) newData.shift();
       newData.push(data);
 
@@ -33,6 +35,6 @@ export const useCensorData = defineStore('censor', {
     },
     getAllData() {
       return this.censorData;
-    }
+    },
   },
 });

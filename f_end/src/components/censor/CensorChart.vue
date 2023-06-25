@@ -1,16 +1,15 @@
 <template>
-  <canvas :id='label' ref='chart' />
+  <canvas :id='topic' ref='chart' />
 </template>
 
 <script setup lang='ts'>
 import { defineProps, onMounted, ref, watch } from 'vue';
 import { Chart, registerables } from 'chart.js';
+import { useCensorData } from '@/store/censor';
 
+const censorData = useCensorData();
 const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-  }, label: {
+  topic: {
     type: String,
     required: true,
   }
@@ -20,16 +19,15 @@ const chart = ref(null);
 let chartInstance = null;
 
 onMounted(() => {
-  console.log(props.data);
-  const ctx = document.getElementById(props.label).getContext('2d');
+  const ctx = document.getElementById(props.topic).getContext('2d');
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: props.data.map((_, idx) => idx - props.data?.length + 1 + ' s'),
+      labels: censorData.getAllData().get(props.topic).map((_, idx) => idx - datas?.length + 1 + ' s'),
       datasets: [
         {
-          label: props.label,
-          data: props.data,
+          label: props.topic,
+          data: censorData.getAllData().get(props.topic),
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
           backgroundColor: 'rgb(255, 255, 255)',
@@ -40,8 +38,9 @@ onMounted(() => {
   })
 });
 
-watch(() => props.data, (newData) => {
+watch(() => censorData.getAllData().get(props.topic), (newData) => {
   if (chartInstance) {
+    chartInstance.data.labels = newData.map((_, idx) => idx - newData.length + 1 + ' s');
     chartInstance.data.datasets[0].data = newData;
     chartInstance.update();
   }

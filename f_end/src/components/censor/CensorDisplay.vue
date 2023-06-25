@@ -1,23 +1,30 @@
 <template>
   <div class='censor-display' @click='click'>
-    <div v-for='(key) in censorData.censorData.keys()' :key='key' class='charts'>
-      <CensorChart :data='censorData.censorData.get(key)' :label='key' />
+    <div v-for='(topic) in censorData.censorData.keys()' :key='topic' class='charts'>
+      <CensorChart :topic='topic' />
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { inject, onMounted } from 'vue';
 import { useCensorData } from '@/store/censor';
 import CensorChart from '@/components/censor/CensorChart.vue';
 
 const censorData = useCensorData();
+const socket = inject('socket');
 
 onMounted(async () => {
+  //  1. 센서 데이터 표시 창이 렌더링 되면서 BE 서버에 등록된 Topic을 받아옴
   await censorData.setAllTopic();
-  for (let i = 0; i < 20; ++i) censorData.updateTopic('/test/topic', i);
-  for (let i = 20; i != 0; --i) censorData.updateTopic('/test/topic2', i);
-  for (let i = 20; i != 0; --i) censorData.updateTopic('/test/topic3', i);
+
+  //  2. Mosquitto와 같은 Topic으로 Ws 이벤트를 listen함
+  for (const topic of censorData.getAllData().keys()) {
+    socket.on(topic, (data) => {
+      //  3. Topic에 대해 data가 보내지면 업데이트
+      censorData.updateTopic(topic, data);
+    })
+  }
 });
 const click = () => {
   censorData.updateTopic('/test/topic2', 3);
