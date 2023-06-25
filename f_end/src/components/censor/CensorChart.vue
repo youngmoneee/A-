@@ -23,7 +23,7 @@ onMounted(() => {
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: censorData.getAllData().get(props.topic).map((_, idx) => idx - datas?.length + 1 + ' s'),
+      labels: censorData.getAllData().get(props.topic).map((_, idx) => idx - censorData.getAllData().get(props.topic)?.length + 1 + ' s'),
       datasets: [
         {
           label: props.topic,
