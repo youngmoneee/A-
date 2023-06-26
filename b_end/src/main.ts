@@ -29,7 +29,5 @@ async function bootstrap() {
   app.enableCors(corsOptions);
   await app.listen(app.get(ConfigService).get('BE_PORT'));
   console.log('Listen::', app.get(ConfigService).get('BE_PORT'));
-  console.log(app.get(ConfigService).get('FE_HOST'));
-  console.log(app.get(ConfigService).get('FE_PORT'));
 }
 bootstrap();
