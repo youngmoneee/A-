@@ -12,12 +12,10 @@
   </div>
 </template>
 <script setup>
-import { useChatStore } from '@/store/chat';
 import { useAuthStore } from '@/store/auth';
 import axios from 'axios';
 import { ref } from 'vue';
 
-const $chat = useChatStore();
 const $auth = useAuthStore();
 let text = ref('');
 let fileRef = ref(null);

@@ -1,5 +1,5 @@
 <template>
-  <div class='censor-display' @click='click'>
+  <div class='censor-display'>
     <div v-for='(topic) in censorData.censorData.keys()' :key='topic' class='charts'>
       <CensorChart :topic='topic' />
     </div>
@@ -26,9 +26,6 @@ onMounted(async () => {
     })
   }
 });
-const click = () => {
-  censorData.updateTopic('/test/topic2', 3);
-}
 </script>
 
 <style scoped>

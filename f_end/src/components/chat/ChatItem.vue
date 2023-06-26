@@ -19,7 +19,11 @@
 import { defineProps } from 'vue';
 
 defineProps({
-  item: Object,
+  item: {
+    type: Object,
+    default: null,
+  },
+
 })
 </script>
 
