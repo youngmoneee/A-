@@ -1,16 +1,26 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as mqtt from 'mqtt';
 import { MqttGateway } from './mqtt.gateway';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
   private client: mqtt.MqttClient;
   private topics = new Map() as Map<string, Array<string | number>>;
-  constructor(private readonly mqttGateway: MqttGateway) {}
+  constructor(
+    private readonly mqttGateway: MqttGateway,
+    private readonly configService: ConfigService,
+  ) {}
   onModuleInit() {
-    this.client = mqtt.connect('mqtt://mosquitto:1883', { username: 'nest' });
-    this.client.on('connect', (cli, msg) => {
-      console.log('Client Connected.');
+    this.client = mqtt.connect(
+      'mqtt://' +
+        this.configService.get('MQTT_HOST') +
+        ':' +
+        this.configService.get('MQTT_PORT'),
+      { username: 'Nest CLient' },
+    );
+    this.client.on('connect', () => {
+      console.log(`Connected.`);
     });
   }
 

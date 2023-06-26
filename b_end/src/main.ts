@@ -18,7 +18,10 @@ async function bootstrap() {
     SwaggerModule.createDocument(app, apiConfig),
   );
   const corsOptions: CorsOptions = {
-    origin: app.get(ConfigService).get('FE_HOST'),
+    origin:
+      app.get(ConfigService).get('FE_HOST') +
+      ':' +
+      app.get(ConfigService).get('FE_PORT'),
     methods: 'GET, PUT, POST, DELETE',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -26,5 +29,7 @@ async function bootstrap() {
   app.enableCors(corsOptions);
   await app.listen(app.get(ConfigService).get('BE_PORT'));
   console.log('Listen::', app.get(ConfigService).get('BE_PORT'));
+  console.log(app.get(ConfigService).get('FE_HOST'));
+  console.log(app.get(ConfigService).get('FE_PORT'));
 }
 bootstrap();

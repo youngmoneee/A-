@@ -1,7 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { MqttService } from './mqtt/mqtt.service';
 
 @ApiTags('Root')
 @Controller()
