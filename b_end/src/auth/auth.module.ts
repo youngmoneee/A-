@@ -12,6 +12,7 @@ import { AuthInterceptor } from './auth.interceptor';
 
 @Module({
   imports: [
+    ConfigModule,
     PassportModule.register({
       defaultStrategy: 'jwt',
       strategies: [KakaoStrategy, GoogleStrategy, JwtStrategy],
