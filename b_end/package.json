@@ -40,6 +40,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-kakao": "^1.0.1",
+    "prisma": "^4.16.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "socket.io": "^4.6.2"
