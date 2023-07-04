@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,25 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum OauthProvider {
+	LOCAL
+	KAKAO
+	GOOGLE
+}
+
+enum ROLE {
+	ADMIN
+	USER
+}
+
+model User {
+  id		Int	@default(autoincrement())	@id
+  provider	OauthProvider
+  userId	String
+  userName	String
+  userEmail	String?
+  userImage	String?
+  userRole	ROLE?
 }
