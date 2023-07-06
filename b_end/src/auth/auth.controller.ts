@@ -15,7 +15,7 @@ import { GoogleGuard } from './guard/google.guard';
 import { UserDto } from '../dto/user.dto';
 import { AuthInterceptor } from './auth.interceptor';
 
-@Controller('oauth')
+@Controller('auth')
 export class AuthController {
   private logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
@@ -50,7 +50,7 @@ export class AuthController {
   @UseGuards(KakaoGuard)
   @UseInterceptors(AuthInterceptor)
   kakaoCallback(@Res() res) {
-    return res.redirect('http://localhost');
+    return res.redirect('/');
   }
 
   @ApiOperation({
@@ -72,6 +72,6 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   @UseInterceptors(AuthInterceptor)
   googleCallback(@Res() res) {
-    return res.redirect('http://localhost');
+    return res.redirect('/');
   }
 }

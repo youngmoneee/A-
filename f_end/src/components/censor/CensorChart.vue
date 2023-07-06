@@ -7,7 +7,7 @@ import { defineProps, onMounted, ref, watch } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import { useCensorData } from '@/store/censor';
 
-const censorData = useCensorData();
+const sensorData = useCensorData();
 const props = defineProps({
   topic: {
     type: String,
@@ -20,27 +20,30 @@ let chartInstance = null;
 
 onMounted(() => {
   const ctx = document.getElementById(props.topic).getContext('2d');
+  const data = sensorData.getAllData();
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: censorData.getAllData().get(props.topic).map((_, idx) => idx - censorData.getAllData().get(props.topic)?.length + 1 + ' s'),
+      labels: [],
       datasets: [
         {
           label: props.topic,
-          data: censorData.getAllData().get(props.topic),
+          data: data.get(props.topic),
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
           backgroundColor: 'rgb(255, 255, 255)',
-          tension: 1,
+          tension: 0.1,
         }
       ]
     }
   })
 });
 
-watch(() => censorData.getAllData().get(props.topic), (newData) => {
+watch(() => sensorData.getAllData().get(props.topic), (newData) => {
   if (chartInstance) {
-    chartInstance.data.labels = newData.map((_, idx) => idx - newData.length + 1 + ' s');
+    chartInstance.data.labels = newData.map((_, idx) => (
+      idx - newData.length + 1) * 5 + ' s'
+    );
     chartInstance.data.datasets[0].data = newData;
     chartInstance.update();
   }
