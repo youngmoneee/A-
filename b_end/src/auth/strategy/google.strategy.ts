@@ -4,13 +4,18 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
 import { OauthProvider } from '../../dto/enum.provider';
-import { AuthService } from '../auth.service';
+import { UserService } from '../../user/user.service';
+import { User } from '@prisma/client';
+import { ROLE } from '../../dto/enum.role';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class GoogleStrategy extends PassportStrategy(
+  Strategy,
+  OauthProvider.GOOGLE,
+) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly authService: AuthService,
+    private readonly userService: UserService,
   ) {
     super({
       clientID: configService.get('G_CLIENT_ID'),
@@ -26,13 +31,31 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: any,
   ) {
-    const user: UserDto = {
+    const userDb = await this.userService.getUserByCB(
+      profile.id,
+      OauthProvider.GOOGLE,
+    );
+    if (userDb) {
+      const user: UserDto = {
+        id: userDb.id,
+        userRole: ROLE[userDb.userRole],
+        userName: userDb.userName,
+      };
+      return done(null, user);
+    }
+    //  없으면 만들고 반환
+    const user: User = await this.userService.createUser({
       provider: OauthProvider.GOOGLE,
       userId: profile.id,
       userName: profile.displayName,
       userEmail: profile.emails[0].value,
       userImage: profile.photos[0].value,
-    };
-    return done(null, user);
+      userRole: ROLE.USER,
+    });
+    return done(null, {
+      id: user.id,
+      userRole: user.userRole,
+      userName: user.userName,
+    } as UserDto);
   }
 }
