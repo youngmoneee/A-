@@ -1,5 +1,5 @@
 export enum OauthProvider {
-  LOCAL = 'local',
-  KAKAO = 'kakao',
-  GOOGLE = 'google',
+  LOCAL = 'LOCAL',
+  KAKAO = 'KAKAO',
+  GOOGLE = 'GOOGLE',
 }
