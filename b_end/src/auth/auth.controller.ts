@@ -26,7 +26,7 @@ export class AuthController {
       '유저가 정상적으로 토큰을 보냈다면 토큰 검증을 통해 유저의 정보를 응답함',
   })
   @Get()
-  @UseGuards(JwtGuard) //  해당 JwtGuard를 거치면서 클라이언트로부터의 토큰이 req.user가 되어 GetUser에서 파싱됨
+  @UseGuards(JwtGuard)
   getUser(@GetUser() user: UserDto) {
     return user;
   }
