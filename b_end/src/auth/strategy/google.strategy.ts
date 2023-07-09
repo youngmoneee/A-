@@ -44,7 +44,7 @@ export class GoogleStrategy extends PassportStrategy(
       return done(null, user);
     }
     //  없으면 만들고 반환
-    const user: User = await this.userService.createUser({
+    const user: UserDto = await this.userService.createUser({
       provider: OauthProvider.GOOGLE,
       userId: profile.id,
       userName: profile.displayName,
