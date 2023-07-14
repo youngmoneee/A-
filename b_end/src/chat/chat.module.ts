@@ -8,6 +8,7 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatGateway } from './chat.gateway';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -38,8 +39,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         }),
       }),
     }),
+    UserModule,
   ],
   controllers: [ChatController],
-  providers: [ChatService, ChatGateway],
+  providers: [ChatService, ChatGateway, ConfigService],
 })
 export class ChatModule {}

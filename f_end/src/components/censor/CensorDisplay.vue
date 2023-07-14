@@ -7,23 +7,21 @@
 </template>
 
 <script setup>
-import { inject, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { useCensorData } from '@/store/censor';
 import CensorChart from '@/components/censor/CensorChart.vue';
+import { useSocketStore } from '@/store/socket';
 
 const censorData = useCensorData();
-const socket = inject('socket');
+const socket = useSocketStore();
 
 onMounted(async () => {
-  //  1. 센서 데이터 표시 창이 렌더링 되면서 BE 서버에 등록된 Topic을 받아옴
   await censorData.setAllTopic();
-
-  //  2. Mosquitto와 같은 Topic으로 Ws 이벤트를 listen함
+  const sock = socket.getSock();
   for (const topic of censorData.getAllData().keys()) {
-    socket.on(topic, (data) => {
-      //  3. Topic에 대해 data가 보내지면 업데이트
+    sock.on(topic, (data) => {
       censorData.updateTopic(topic, data);
-    })
+    });
   }
 });
 </script>

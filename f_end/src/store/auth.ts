@@ -5,19 +5,21 @@ export const useAuthStore = defineStore('auth', {
     token: '',
   }),
   actions: {
-    logToken() {
-      console.log(this.token);
-    },
     isAuthed(): boolean {
       return this.token !== '';
     },
-    parseToken() {
-      const token = document.cookie
+    parseCookies(): { [key: string]: string } {
+      return document.cookie
         .split(';')
-        .map((kv) => kv.split('='))
-        .map(([k, v]) => [k, v])
-        .find(([k]) => k === 'DEV_TOKEN');
-      this.token = token ? token[1] : '';
+        .reduce((cookies: { [key: string]: string }, cookie) => {
+          const [name, value] = cookie.split('=').map((c) => c.trim());
+          cookies[name] = value;
+          return cookies;
+        }, {});
+    },
+    parseToken(): void {
+      const cookies = this.parseCookies();
+      this.token = cookies[process.env.VUE_APP_TOKEN_NAME] || '';
     },
   },
 });

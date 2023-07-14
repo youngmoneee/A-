@@ -4,13 +4,17 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
 import { OauthProvider } from '../../dto/enum.provider';
-import { AuthService } from '../auth.service';
+import { UserService } from '../../user/user.service';
+import { ROLE } from '../../dto/enum.role';
 
 @Injectable()
-export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
+export class KakaoStrategy extends PassportStrategy(
+  Strategy,
+  OauthProvider.KAKAO,
+) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly authService: AuthService,
+    private readonly userService: UserService,
   ) {
     super({
       clientID: configService.get('K_CLIENT_ID'),
@@ -25,13 +29,31 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     profile: any,
     done: any,
   ) {
-    const user: UserDto = {
+    const userDb: UserDto = await this.userService.getUserByCB(
+      profile.id.toString(),
+      OauthProvider.KAKAO,
+    );
+    if (userDb) {
+      const user: UserDto = {
+        id: userDb.id,
+        userRole: ROLE[userDb.userRole],
+        userName: userDb.userName,
+      };
+      return done(null, user);
+    }
+    //  없으면 만들고 반환
+    const user: UserDto = await this.userService.createUser({
       provider: OauthProvider.KAKAO,
-      userId: profile.id,
+      userId: profile.id.toString(),
       userName: profile.displayName,
       userEmail: profile._json.kakao_account.email,
       userImage: profile._json.properties.profile_image,
-    };
-    return done(null, user);
+      userRole: ROLE.USER,
+    });
+    return done(null, {
+      id: user.id,
+      userRole: user.userRole,
+      userName: user.userName,
+    } as UserDto);
   }
 }

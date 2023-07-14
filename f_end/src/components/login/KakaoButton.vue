@@ -1,6 +1,6 @@
 <template>
 <div style="display: flex; flex-direction: column; align-items: center">
-  <a href = '/api/oauth/kakao'>
+  <a href = '/auth/kakao'>
   <img
     src="@/assets/kakao_login_large_narrow.png"
     height="92"

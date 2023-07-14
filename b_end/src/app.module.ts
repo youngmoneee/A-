@@ -8,6 +8,7 @@ import { ChatModule } from './chat/chat.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as process from 'process';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import * as process from 'process';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PrismaService],
 })
 export class AppModule {}

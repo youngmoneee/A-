@@ -1,9 +1,7 @@
-import { OauthProvider } from './enum.provider';
+import { ROLE } from './enum.role';
 
 export class UserDto {
-  provider: OauthProvider;
-  userId: string;
+  id: number;
+  userRole: ROLE;
   userName: string;
-  userEmail?: string;
-  userImage?: string;
 }

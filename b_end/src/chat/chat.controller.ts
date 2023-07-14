@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Logger,
   Post,
   Req,
@@ -13,7 +12,6 @@ import { GetUser } from '../user/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ChatService } from './chat.service';
 import { UserDto } from '../dto/user.dto';
-import { GetToken } from '../auth/auth.decorator';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { ChatGateway } from './chat.gateway';
 import { Chat } from '../dto/createChatDto';
@@ -26,7 +24,7 @@ export class ChatController {
     private readonly chatGateway: ChatGateway,
   ) {}
   logger = new Logger(ChatController.name);
-  @Get()
+  //@Get()
   async findAll() {
     this.logger.debug(`Called ${this.findAll.name}`);
     return await this.chatService.findAll();
@@ -36,7 +34,6 @@ export class ChatController {
   async sendMessage(
     @Req() req: Request,
     @GetUser() user: UserDto,
-    @GetToken() token: string,
     @UploadedFile() file?: Express.Multer.File,
     @Body('msg') msg?: string,
   ) {
@@ -48,6 +45,6 @@ export class ChatController {
       fileUrl: file?.path,
     };
     const res = await this.chatService.create(chatSchema);
-    this.chatGateway.publish(res);
+    await this.chatGateway.publish(res);
   }
 }

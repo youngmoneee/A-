@@ -4,12 +4,12 @@ import GoogleButton from '@/components/login/GoogleButton.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/api/oauth/kakao',
+    path: '/auth/kakao',
     name: 'kakaoLogin',
     component: KakaoButton,
   },
   {
-    path: '/api/oauth/google',
+    path: '/auth/google',
     name: 'googleLogin',
     component: GoogleButton,
   },

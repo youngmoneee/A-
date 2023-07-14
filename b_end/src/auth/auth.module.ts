@@ -9,6 +9,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtGuard } from './guard/jwt.guard';
 import { AuthInterceptor } from './auth.interceptor';
+import { UserModule } from '../user/user.module';
+import { PrismaService } from '../prisma.service';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { AuthInterceptor } from './auth.interceptor';
         },
       }),
     }),
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -36,6 +39,7 @@ import { AuthInterceptor } from './auth.interceptor';
     JwtStrategy,
     JwtGuard,
     AuthInterceptor,
+    PrismaService,
   ],
 })
 export class AuthModule {}

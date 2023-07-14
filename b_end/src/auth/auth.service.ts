@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserDto } from '../dto/user.dto';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -9,13 +10,11 @@ export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   generateToken(user: UserDto): string {
-    const token = this.jwtService.sign(user);
-    if (token)
-      this.logger.log(`${user.userName}'s Token ${token} is Generated.`);
-    return token;
+    return this.jwtService.sign(user);
   }
 
   verifyToken(token: string): UserDto {
@@ -27,6 +26,16 @@ export class AuthService {
       this.logger.log(`token decode failed`);
       return null;
     }
+  }
+
+  async userVerify(user: UserDto): Promise<boolean> {
+    const res = await this.prismaService.user.findFirst({
+      where: {
+        id: user.id,
+      },
+    });
+    if (!res) return false;
+    return true;
   }
 
   getTokenId(): string {

@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OauthProvider {
+	LOCAL
+	KAKAO
+	GOOGLE
+}
+
+enum ROLE {
+	ADMIN
+	USER
+}
+
+model User {
+  id		Int	@id @default(autoincrement())
+  provider	OauthProvider
+  userId	String
+  userName	String
+  userEmail	String?
+  userImage	String?
+  userRole	ROLE
+}
