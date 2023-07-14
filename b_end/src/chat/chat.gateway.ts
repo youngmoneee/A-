@@ -2,7 +2,6 @@ import {
   OnGatewayConnection,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Chat, IChat } from '../dto/createChatDto';
@@ -30,7 +29,6 @@ export class ChatGateway implements OnGatewayConnection {
       jwt.verify(token, this.configService.get<string>('JWT_SECRET'));
     } catch (e) {
       client.disconnect();
-      throw new WsException('UnAuthorization');
     }
   }
 
