@@ -2,13 +2,15 @@ import {
   OnGatewayConnection,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GetUser } from '../user/user.decorator';
-import { UserDto } from '../dto/user.dto';
 import { Chat, IChat } from '../dto/createChatDto';
 import { Logger } from '@nestjs/common';
-
+import { UserService } from '../user/user.service';
+import { UserDetailDto } from '../dto/userDetail.dto';
+import * as jwt from 'jsonwebtoken';
+import { ConfigService } from '@nestjs/config';
 @WebSocketGateway({
   cors: {
     origin: 'localhost',
@@ -18,16 +20,27 @@ export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
   private readonly logger = new Logger(ChatGateway.name);
-
-  handleConnection(client: Socket, @GetUser() user: UserDto) {
-    const msg = `Hi ${user?.userName}`;
-    client.emit('hello', msg);
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+  ) {}
+  handleConnection(client: Socket) {
+    const token = client.handshake.query?.token as string;
+    try {
+      jwt.verify(token, this.configService.get<string>('JWT_SECRET'));
+    } catch (e) {
+      client.disconnect();
+      throw new WsException('UnAuthorization');
+    }
   }
 
-  publish(chatSchema: Chat) {
+  async publish(chatSchema: Chat) {
+    const userDetail: UserDetailDto = await this.userService.getUserDetailById(
+      chatSchema.user.id,
+    );
     const chat: IChat = {
-      userName: chatSchema.user.userName,
-      userImg: chatSchema.user.userImage,
+      userName: userDetail.userName,
+      userImg: userDetail.userImage,
       fileUrl: chatSchema.fileUrl,
       msg: chatSchema.msg,
     };
