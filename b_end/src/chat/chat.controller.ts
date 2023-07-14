@@ -4,18 +4,27 @@ import {
   Get,
   Logger,
   Post,
+  Req,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from '../user/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ChatService } from './chat.service';
 import { UserDto } from '../dto/user.dto';
-import { CreateChatDto } from '../dto/createChatDto';
+import { GetToken } from '../auth/auth.decorator';
+import { JwtGuard } from '../auth/guard/jwt.guard';
+import { ChatGateway } from './chat.gateway';
+import { Chat } from '../dto/createChatDto';
 
 @Controller('chat')
+@UseGuards(JwtGuard)
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly chatGateway: ChatGateway,
+  ) {}
   logger = new Logger(ChatController.name);
   @Get()
   async findAll() {
@@ -25,18 +34,21 @@ export class ChatController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async sendMessage(
+    @Req() req: Request,
     @GetUser() user: UserDto,
-    @UploadedFile() file: Express.Multer.File,
-    @Body('msg') msg,
+    @GetToken() token: string,
+    @UploadedFile() file?: Express.Multer.File,
+    @Body('msg') msg?: string,
   ) {
     this.logger.debug(`Called ${this.sendMessage.name}`);
-    const createChatDto: CreateChatDto = {
+    const chatSchema: Chat = {
+      createdAt: new Date(),
       user,
       msg,
-      imgUrl: file?.path,
+      fileUrl: file?.path,
     };
-    console.log('ChatDto::', createChatDto);
-    console.log(file);
-    return await this.chatService.create(createChatDto);
+    if (file) this.logger.log(`File : ${file.path}`);
+    const res = await this.chatService.create(chatSchema);
+    this.chatGateway.publish(res);
   }
 }

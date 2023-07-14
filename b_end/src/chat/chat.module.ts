@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
-import { Chat, ChatSchema } from '../entity/chat.schema';
+import { Chat, ChatSchema } from '../dto/createChatDto';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';

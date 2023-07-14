@@ -15,7 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     AuthModule,
     MqttModule,
     ChatModule,
-    MongooseModule.forRoot('mongodb://localhost:27017'),
+    MongooseModule.forRoot('mongodb://mongo:27017'),
   ],
   controllers: [AppController],
   providers: [AppService],
