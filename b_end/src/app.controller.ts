@@ -1,15 +1,23 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { MqttService } from './mqtt/mqtt.service';
 
 @ApiTags('Root')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly mqttService: MqttService,
+  ) {}
 
   @ApiOperation({ summary: 'Check User', description: "Check User's Auth" })
   @Get()
   getHello(): string {
     return 'hello';
+  }
+  @Get('/:msg')
+  publish(@Param('msg') msg: string) {
+    this.mqttService.publishTemp(msg);
   }
 }
