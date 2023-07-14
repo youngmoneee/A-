@@ -1,14 +1,12 @@
 import {
   OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GetUser } from '../user/user.decorator';
 import { UserDto } from '../dto/user.dto';
-import { Chat, CreateChatDto, IChat } from '../dto/createChatDto';
+import { Chat, IChat } from '../dto/createChatDto';
 import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
@@ -20,6 +18,7 @@ export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
   private readonly logger = new Logger(ChatGateway.name);
+
   handleConnection(client: Socket, @GetUser() user: UserDto) {
     const msg = `Hi ${user?.userName}`;
     client.emit('hello', msg);
@@ -34,10 +33,5 @@ export class ChatGateway implements OnGatewayConnection {
     };
     this.logger.debug(`Called ${this.publish.name}`);
     this.server.emit('chat', chat);
-  }
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    console.log('hello');
-    return 'Hello world!';
   }
 }

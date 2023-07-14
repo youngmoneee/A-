@@ -1,7 +1,7 @@
 <template>
   <div class='chat-div'>
-    <ChatList></ChatList>
-    <ChatSend></ChatSend>
+    <ChatList />
+    <ChatSend />
   </div>
 </template>
 <script setup>
@@ -13,8 +13,7 @@ import ChatSend from '@/components/chat/ChatSend.vue';
 .chat-div {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  width: 100%;
-  height: 100%;
+  align-items: stretch;
+  background: blue;
 }
 </style>

@@ -7,6 +7,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatGateway } from './chat.gateway';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -16,21 +17,25 @@ import { ChatGateway } from './chat.gateway';
         schema: ChatSchema,
       },
     ]),
-    MulterModule.register({
-      storage: diskStorage({
-        destination: 'uploads/chat',
-        filename: (req, file, cb) => {
-          const base = file.originalname.substring(
-            0,
-            file.originalname.lastIndexOf('.'),
-          );
-          const ext = file.originalname.substring(
-            file.originalname.lastIndexOf('.'),
-          );
-          //  unique fileName
-          const fileName = `${base}-${uuidv4()}${ext}`;
-          cb(null, fileName);
-        },
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        storage: diskStorage({
+          destination: configService.get('UPLOAD_DEST'),
+          filename: (req, file, cb) => {
+            const base = file.originalname.substring(
+              0,
+              file.originalname.lastIndexOf('.'),
+            );
+            const ext = file.originalname.substring(
+              file.originalname.lastIndexOf('.'),
+            );
+            //  unique fileName
+            const fileName = `${base}-${uuidv4()}${ext}`;
+            cb(null, fileName);
+          },
+        }),
       }),
     }),
   ],

@@ -9,8 +9,8 @@ export const useChatStore = defineStore('chat', {
     addList(chat: IChat) {
       this.list.push(chat);
     },
-    getList() {
-      return this.list;
+    getChatData() {
+      return this.list.slice().reverse();
     },
   },
 });
