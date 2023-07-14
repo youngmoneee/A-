@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
 import { OauthProvider } from '../../dto/enum.provider';
-import { User } from '@prisma/client';
 import { UserService } from '../../user/user.service';
 import { ROLE } from '../../dto/enum.role';
 

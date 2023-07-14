@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../../dto/user.dto';
 import { OauthProvider } from '../../dto/enum.provider';
 import { UserService } from '../../user/user.service';
-import { User } from '@prisma/client';
 import { ROLE } from '../../dto/enum.role';
 
 @Injectable()
