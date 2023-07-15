@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
@@ -9,37 +9,42 @@ datasource db {
 }
 
 enum OauthProvider {
-	LOCAL
-	KAKAO
-	GOOGLE
+  LOCAL
+  KAKAO
+  GOOGLE
 }
 
 enum ROLE {
-	ADMIN
-	USER
+  ADMIN
+  USER
 }
 
 model User {
-  id		Int	@id @default(autoincrement())
-  provider	OauthProvider
-  userId	String
-  userName	String
-  userEmail	String?
-  userImage	String?
-  userRole	ROLE
-  userDevices   UserDevice[]
+  id          Int           @id @default(autoincrement())
+  provider    OauthProvider
+  userId      String
+  userName    String
+  userEmail   String?
+  userImage   String?
+  userRole    ROLE
+  userDevices UserDevice[]
+  Device      Device[]
 }
 
 model Device {
-  id        Int @id @default(autoincrement())
-  name      String  @unique
-  userDevices   UserDevice[]
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  adminId     Int
+  admin       User         @relation(fields: [adminId], references: [id])
+  userDevices UserDevice[]
 }
 
 model UserDevice {
-  id        Int @id @default(autoincrement())
-  userId    Int
-  deviceId  Int
-  user      User @relation(fields: [userId], references: [id])
-  device    Device @relation(fields: [deviceId], references: [id])
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  deviceId Int
+  user     User   @relation(fields: [userId], references: [id])
+  device   Device @relation(fields: [deviceId], references: [id])
+
+  @@unique([userId, deviceId])
 }
