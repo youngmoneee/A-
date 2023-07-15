@@ -27,4 +27,19 @@ model User {
   userEmail	String?
   userImage	String?
   userRole	ROLE
+  userDevices   UserDevice[]
+}
+
+model Device {
+  id        Int @id @default(autoincrement())
+  name      String  @unique
+  userDevices   UserDevice[]
+}
+
+model UserDevice {
+  id        Int @id @default(autoincrement())
+  userId    Int
+  deviceId  Int
+  user      User @relation(fields: [userId], references: [id])
+  device    Device @relation(fields: [deviceId], references: [id])
 }
