@@ -1,17 +1,24 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import KakaoButton from '@/components/login/KakaoButton.vue';
-import GoogleButton from '@/components/login/GoogleButton.vue';
+import IndexPage from '@/components/index/IndexPage.vue';
+import UserInfo from '@/components/UserInfo.vue';
+import DeviceController from '@/components/DeviceController.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/auth/kakao',
-    name: 'kakaoLogin',
-    component: KakaoButton,
+    path: '/',
+    name: 'Index',
+    component: IndexPage,
   },
   {
-    path: '/auth/google',
-    name: 'googleLogin',
-    component: GoogleButton,
+    path: '/device/:name',
+    name: 'Device',
+    component: DeviceController,
+    props: true,
+  },
+  {
+    path: '/info',
+    name: 'Info',
+    component: UserInfo,
   },
 ];
 

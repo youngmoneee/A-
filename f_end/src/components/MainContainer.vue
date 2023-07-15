@@ -1,13 +1,13 @@
 <template>
   <div class='main-container'>
-    <CensorDiv class='censor-div' />
+    <DisplayDiv class='display-div' />
     <ChatDiv class='chat-div' />
   </div>
 </template>
 
 <script setup>
 import ChatDiv from '@/components/chat/ChatDiv.vue';
-import CensorDiv from '@/components/censor/CencorDiv.vue';
+import DisplayDiv from '@/components/DisplayDiv.vue';
 </script>
 
 <style scoped>
@@ -16,7 +16,7 @@ import CensorDiv from '@/components/censor/CencorDiv.vue';
   display: flex;
   flex-direction: column;
 }
-.censor-div {
+.display-div {
   height: 60%;
 }
 .chat-div {

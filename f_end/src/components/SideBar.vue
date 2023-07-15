@@ -1,38 +1,50 @@
 <template>
   <div class="nav-bar">
     <div
-      v-for="(item, idx) in navbar"
+      v-for="(item) in navbar"
       :key="item"
       class="nav-item"
-      :style="{ backgroundColor: colour[idx % colour.length] }"
-      @click="navbar.push(navbar[idx])"
+      @click="navigate(item)"
     >
       <div
-        class="nav -content"
+        class="nav-content"
       > {{ item }} </div
       >
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { useAuthStore } from '@/store/auth';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import router from '@/router';
 
-export default {
-  name: 'SideNav',
-  data() {
-    return {
-      navbar: ['A', 'B', 'C', 'D', 'E'],
-      colour: ['red', 'blue', 'yellow'],
-    };
-  },
-  methods: {
-  },
-};
+const auth = useAuthStore();
+const { token, isAuthed } = storeToRefs(auth);
+
+const mock = ['dev1', 'dev2'];
+
+const navbar = computed(() => {
+  const items = mock;
+  if (isAuthed) return items.concat(['info', 'logout']);
+  return items;
+});
+const navigate = (item: string) => {
+  if (item === 'logout') {
+    auth.logout();
+    router.push('/');
+  }
+  else if (item === 'info') router.push('/info');
+  else router.push(`/device/${item}`);
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .nav-bar {
+  background-image: url('/src/assets/iphone.png');
+  background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -47,6 +59,7 @@ export default {
   margin: 0px;
   padding: 10px;
   width: 100%;
+  font-weight: bold;
   /**
    * flex-basis를 통해 기본 크기를 0으로 설정, flex-grow=1 옵션을 통해 나머지 공간을 균등하게 분배 -->
    */
@@ -55,6 +68,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.00);
+  box-shadow: 4px 4px 60px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 .nav-content {
   margin: 0;
