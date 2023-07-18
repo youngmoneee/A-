@@ -12,10 +12,10 @@ import ChatItem from '@/components/chat/ChatItem.vue';
 import { useSocketStore } from '@/store/socket';
 
 const chat = useChatStore();
-const socket = useSocketStore();
+const { socket } = useSocketStore();
 
 onMounted(() => {
-  socket.getSock().on('chat', (data: IChat) => {
+  socket.on('chat', (data: IChat) => {
       chat.addList(data);
     });
 });
