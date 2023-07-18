@@ -2,9 +2,13 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref('');
+  const tok = ref('');
+  const token = computed(() => {
+    parseToken();
+    return tok.value;
+  })
   const isAuthed = computed(() => {
-    return token.value !== '';
+    return tok.value !== '';
   });
   function parseCookies(): { [key: string]: string } {
     return document.cookie
@@ -17,10 +21,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
   function parseToken(): void {
     const cookies = parseCookies();
-    token.value = cookies[process.env.VUE_APP_TOKEN_NAME] || '';
+    tok.value = cookies[process.env.VUE_APP_TOKEN_NAME] || '';
   }
   function logout(): void {
-    token.value = '';
+    tok.value = '';
   }
   return { token, isAuthed, parseToken, logout };
 });
