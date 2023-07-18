@@ -1,40 +1,47 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import { computed, ref } from 'vue';
+import { useSocketStore } from '@/store/socket';
 
-export const useCensorData = defineStore('censor', {
-  state: () => ({
-    /**
-     * @key : topic
-     * @value : data
-     */
-    censorData: new Map() as Map<string, Array<string | number>>,
-    dataLength: 20,
-  }),
-  actions: {
-    addNewTopic(topic: string) {
-      if (this.censorData.has(topic)) return;
-      this.censorData.set(topic, []);
-    },
-    async setAllTopic() {
-      try {
-        const response = await axios.get('/api/mqtt/topic');
-        response.data.forEach((topic: string) => {
-          this.addNewTopic(topic);
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    },
-    updateTopic(topic: string, data: string | number) {
-      const newData: Array<string | number> =
-        this.censorData.get(topic)?.slice() || [];
-      if (newData.length >= this.dataLength) newData.shift();
-      newData.push(data);
+export const useCensorData = defineStore('censor', () => {
+  /**
+   * @key : topic
+   * @value : data
+   */
+  const sensorData = ref(new Map() as Map<string, Array<number>>);
+  const dataLength = 20;
+  const data = computed((topic) => {
+    return sensorData.value.get(topic);
+  });
 
-      this.censorData.set(topic, newData);
-    },
-    getAllData() {
-      return this.censorData;
-    },
-  },
+  function deviceSubscribe(device: string) {
+    const { socket } = useSocketStore();
+    sensorData.value.clear();
+
+    console.log(`subscribe ${device}`);
+    socket.on(device, (data) => {
+      topicSub(data.topic);
+      dataAppend(data.topic, data.value);
+      console.log(sensorData.value);
+    });
+  }
+
+  function deviceUnSubscribe(device: string) {
+    const { socket } = useSocketStore();
+    socket.off(device);
+    sensorData.value.clear();
+    console.log(`unsubscribe ${device}`);
+  }
+  function topicSub(topic: string) {
+    if (sensorData.value.has(topic)) return;
+    sensorData.value.set(topic, []);
+  }
+
+  function dataAppend(topic: string, value: number) {
+    const newData: Array<number> = sensorData.value.get(topic)?.slice() || [];
+    if (newData.length >= dataLength) newData.shift();
+    newData.push(value);
+
+    sensorData.value.set(topic, newData);
+  }
+  return { deviceSubscribe, deviceUnSubscribe, data };
 });
