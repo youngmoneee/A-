@@ -1,6 +1,6 @@
 <template>
   <div class='user-info'>
-    <div class='title'>Infomation</div>
+    <div class='title'>Information</div>
     <div class='user-img-container'>
       <img class='user-image' :src='data.userImage' alt='profile image'/>
     </div>
@@ -41,7 +41,6 @@ onMounted(async () => {
       }
     });
     data.value = response.data;
-    data.value.userDevice = ['dev1', 'dev2'];
     console.log(data.value);
   } catch (e) {
     console.log(e);
