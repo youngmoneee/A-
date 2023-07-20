@@ -16,12 +16,12 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import router from '@/router';
 import axios from 'axios';
 
 const { token, isAuthed, logout } = useAuthStore();
-const data = ref([]);
+let data = reactive([]);
 
 onMounted(async () => {
   try {
@@ -30,15 +30,15 @@ onMounted(async () => {
         Authorization: `Bearer ${token}`,
       }
     });
-    data.value = response.data;
-    console.log(data.value);
+    response.data.forEach((value) => data.push(value));
+    if (isAuthed) data.push('info', 'logout');
   } catch (e) {
     console.log(e);
   }
 });
 const navbar = computed(() => {
-  if (isAuthed) return data.value.concat(['info', 'logout']);
-  return data.value;
+  if (!isAuthed) return [];
+  return data;
 });
 const navigate = (item: string) => {
   if (item === 'logout') {
