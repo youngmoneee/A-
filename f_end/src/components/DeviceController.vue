@@ -1,13 +1,18 @@
 <template>
 <div class='device-controller'>
   {{ props.name }}
+  <div v-for='(topic) in sensorData?.sensorData?.keys()' :key='topic'>
+    <SensorChart :topic='topic' style='width: 1000px; height: 200px;'/>
+  </div>
 </div>
 </template>
 
 <script setup lang='ts'>
 import { defineProps, onUnmounted, watch } from 'vue';
-import { useCensorData } from '@/store/censor';
-const { deviceSubscribe, deviceUnSubscribe, data } = useCensorData();
+import SensorChart from '@/components/sensor/SensorChart.vue';
+import { useSensorData } from '@/store/sensor';
+
+const sensorData = useSensorData();
 const props = defineProps({
   name: {
     type: String,
@@ -18,16 +23,14 @@ const props = defineProps({
 watch(
   () => props.name,
   (newName, oldName) => {
-    if (oldName) deviceUnSubscribe(oldName);
-    deviceSubscribe(newName);
+    if (oldName) sensorData.deviceUnSubscribe(oldName);
+    sensorData.deviceSubscribe(newName);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onUnmounted(() => {
-  if (props.name) {
-    deviceUnSubscribe(props.name);
-  }
+  if (props.name) sensorData.deviceUnSubscribe(props.name);
 });
 
 </script>

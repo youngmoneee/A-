@@ -1,55 +1,58 @@
 <template>
-  <canvas :id='topic' ref='chart' />
+  <div>
+    <canvas ref="chart"/>
+  </div>
 </template>
 
-<script setup lang='ts'>
-import { defineProps, onMounted, ref, watch } from 'vue';
+<script setup lang="ts">
+import { defineProps, ref, onMounted, onUnmounted, watch } from 'vue';
 import { Chart, registerables } from 'chart.js';
-import { useSensorData } from '@/store/censor';
+import { useSensorData } from '@/store/sensor';
 
+Chart.register(...registerables);
+const sensorData = useSensorData();
 const props = defineProps({
   topic: {
     type: String,
     required: true,
   }
 })
-Chart.register(...registerables);
+
 const chart = ref(null);
-let chartInstance = null;
-const { data } = useSensorData();
+let chartInstance: any = null;
 
 onMounted(() => {
-  const ctx = document.getElementById(props.topic).getContext('2d');
-  chartInstance = new Chart(ctx, {
+  const context = chart.value?.getContext('2d');
+  chartInstance = new Chart(context, {
     type: 'line',
     data: {
-      labels: [],
+      labels: sensorData.getLabel(props.topic) || [],
       datasets: [
         {
           label: props.topic,
-          data: data[props.topic],
+          backgroundColor: '#f87979',
+          data: sensorData.sensorData?.get(props.topic) || [],
           fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          backgroundColor: 'rgb(255, 255, 255)',
           tension: 0.1,
         }
       ]
-    }
-  })
-  console.log(props.topic);
+    },
+  });
 });
-
-watch(() => data[props.topic], (newData) => {
+onUnmounted(() => {
   if (chartInstance) {
-    chartInstance.data.labels = newData.map((_, idx) => (
-      idx - newData.length + 1) * 5 + ' s'
-    );
+    chartInstance.destroy();
+  }
+});
+watch(() => sensorData.getAllData().get(props.topic) as number[], (newData : number[]) => {
+  if (chartInstance) {
+    chartInstance.data.labels = sensorData.getLabel(props.topic);
     chartInstance.data.datasets[0].data = newData;
     chartInstance.update();
   }
-}, { deep: true })
-</script>
+}, {deep: true})
 
+</script>
 <style scoped>
 
 </style>
