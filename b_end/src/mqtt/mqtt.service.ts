@@ -7,7 +7,6 @@ import { PrismaService } from '../prisma.service';
 @Injectable()
 export class MqttService implements OnModuleInit {
   private client: mqtt.MqttClient;
-  private topics = new Map() as Map<string, Array<string | number>>;
   constructor(
     private readonly mqttGateway: MqttGateway,
     private readonly configService: ConfigService,
@@ -32,7 +31,11 @@ export class MqttService implements OnModuleInit {
               if (err) console.error(err);
             })
             .on('message', (topic, msg) => {
-              this.mqttGateway.publish(topic, Number(msg.toString()));
+              //  TODO: create DTO
+              this.mqttGateway.publish(item.name, {
+                topic: topic,
+                value: Number(msg.toString()),
+              });
             });
         });
       } catch (e) {
@@ -45,6 +48,10 @@ export class MqttService implements OnModuleInit {
     this.client.publish(topic, msg, { qos: 1, retain: true }, (e) => {
       if (e) console.error(e);
     });
+  }
+
+  pubWS(device: string, data) {
+    this.mqttGateway.publish(device, data);
   }
 
   async deviceAll() {
@@ -99,13 +106,16 @@ export class MqttService implements OnModuleInit {
       console.error(e);
     }
     this.client
-      .subscribe(device, (err) => {
+      .subscribe(`${device}/#`, (err) => {
         if (err) {
           console.error('Failed to subscribe to topic:', err);
         }
       })
       .on('message', (topic, msg) => {
-        this.mqttGateway.publish(topic, Number(msg.toString()));
+        this.mqttGateway.publish(device, {
+          topic: topic,
+          value: Number(msg.toString()),
+        });
       });
   }
 

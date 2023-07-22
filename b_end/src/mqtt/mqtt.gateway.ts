@@ -6,7 +6,7 @@ export class MqttGateway {
   @WebSocketServer()
   server: Server;
 
-  publish(topic: string, data: string | number) {
-    this.server.emit(topic, data);
+  publish(device: string, data: object) {
+    this.server.emit(device, data);
   }
 }

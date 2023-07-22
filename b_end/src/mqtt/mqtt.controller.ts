@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -40,5 +41,19 @@ export class MqttController {
   iroff(@Res() res: Response) {
     this.mqttService.publishMessage('dev1/off', '');
     return res.sendStatus(200);
+  }
+  @Get('test')
+  test(@Query('val', ParseIntPipe) val: number) {
+    this.mqttService.pubWS('dev2', {
+      topic: 'dev2/hi',
+      value: val,
+    });
+  }
+  @Get('test2')
+  test2(@Query('val', ParseIntPipe) val: number) {
+    this.mqttService.pubWS('dev2', {
+      topic: 'dev2/zzz/qwe',
+      value: val,
+    });
   }
 }
