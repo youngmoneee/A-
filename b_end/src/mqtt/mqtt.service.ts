@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import * as mqtt from 'mqtt';
 import { MqttGateway } from './mqtt.gateway';
 import { ConfigService } from '@nestjs/config';
@@ -24,13 +30,15 @@ export class MqttService implements OnModuleInit {
       try {
         //  새로 연결 시, 등록되어있는 모든 기기 구독
         const devices = await this.deviceAll();
-
         devices.forEach((item) => {
           this.client
             .subscribe(`${item.name}/#`, (err) => {
               if (err) console.error(err);
             })
             .on('message', (topic, msg) => {
+              //  Ignore messages if what is being sent to Device
+              if (topic.split('/').pop() === 'input') return;
+
               //  TODO: create DTO
               this.mqttGateway.publish(item.name, {
                 topic: topic,
@@ -43,10 +51,10 @@ export class MqttService implements OnModuleInit {
       }
     });
   }
-  publishMessage(topic: string, msg: string) {
+  remoteDevice(topic: string, msg: string) {
     //  아두이노는 너무 잘 끊겨서 qos 1로 함. retain 옵션으로 다시 구독하는 순간에 해당 메세지 전송받음
     this.client.publish(topic, msg, { qos: 1, retain: true }, (e) => {
-      if (e) console.error(e);
+      if (e) throw new HttpException('Mqtt Error', HttpStatus.BAD_GATEWAY);
     });
   }
 
