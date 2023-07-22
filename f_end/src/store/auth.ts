@@ -6,10 +6,10 @@ export const useAuthStore = defineStore('auth', () => {
   const token = computed(() => {
     parseToken();
     return tok.value;
-  })
-  const isAuthed = computed(() => {
-    return tok.value !== '';
   });
+  function isAuthed() {
+    return tok.value !== '';
+  }
   function parseCookies(): { [key: string]: string } {
     return document.cookie
       .split(';')
@@ -26,5 +26,6 @@ export const useAuthStore = defineStore('auth', () => {
   function logout(): void {
     tok.value = '';
   }
-  return { token, isAuthed, parseToken, logout };
+
+  return { token, isAuthed, logout, parseToken };
 });

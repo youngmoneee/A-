@@ -31,13 +31,13 @@ onMounted(async () => {
       }
     });
     response.data.forEach((value) => data.push(value));
-    if (isAuthed) data.push('info', 'logout');
+    if (isAuthed()) data.push('info', 'logout');
   } catch (e) {
     console.log(e);
   }
 });
 const navbar = computed(() => {
-  if (!isAuthed) return [];
+  if (!isAuthed()) return [];
   return data;
 });
 const navigate = (item: string) => {
