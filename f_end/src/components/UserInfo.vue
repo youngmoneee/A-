@@ -19,7 +19,7 @@
       </div>
       <div class='user-device'>
         <div class='device-label'>User Device</div>
-        <li v-for='key in data.userDevice' :key='key'>{{ key }}</li>
+        <li v-for='key in data.devices' :key='key'>{{ key }}</li>
       </div>
     </div>
   </div>
