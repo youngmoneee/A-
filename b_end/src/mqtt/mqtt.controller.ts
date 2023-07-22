@@ -2,15 +2,14 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Query,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { MqttService } from './mqtt.service';
-import { Response } from 'express';
 import { GetUser } from '../user/user.decorator';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 @Controller('mqtt')
@@ -27,21 +26,17 @@ export class MqttController {
     await this.mqttService.deviceRegister(user.id, device);
   }
 
-  @Get('device/:id')
-  deviceDetail(@Param('id', ParseIntPipe) id: number) {
-    return this.mqttService.getDeviceInfo(id);
+  @Get('device/:device')
+  deviceDetail(@Param('device', ParseIntPipe) device: number) {
+    return this.mqttService.getDeviceInfo(device);
   }
 
-  @Get('on')
-  ir(@Res() res: Response) {
-    this.mqttService.publishMessage('dev1/on', '');
-    return res.sendStatus(200);
+  @Post('device/:device')
+  deviceRemote(@Param('device') device: string, @Body('command') command) {
+    this.mqttService.remoteDevice(`${device}/input`, command);
+    return HttpStatus.OK;
   }
-  @Get('off')
-  iroff(@Res() res: Response) {
-    this.mqttService.publishMessage('dev1/off', '');
-    return res.sendStatus(200);
-  }
+
   @Get('test')
   test(@Query('val', ParseIntPipe) val: number) {
     this.mqttService.pubWS('dev2', {
