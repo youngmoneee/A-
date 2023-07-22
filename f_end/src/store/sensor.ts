@@ -20,7 +20,7 @@ export const useSensorData = defineStore('sensor', {
     deviceUnSubscribe(device: string) {
       const { socket } = useSocketStore();
 
-      console.log(`subscribe ${device}`);
+      console.log(`unsubscribe ${device}`);
       socket.off(device);
       this.sensorData.clear();
     },

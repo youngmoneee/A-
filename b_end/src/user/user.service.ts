@@ -36,16 +36,32 @@ export class UserService {
   }
 
   async getUserDetailById(id: number): Promise<UserDetailDto> {
-    const user = await this.prisma.user.findFirstOrThrow({
-      where: { id },
-    });
-    return {
-      id: user.id,
-      userRole: ROLE[user.userRole],
-      userName: user.userName,
-      userEmail: user.userEmail,
-      userImage: user.userImage,
-    } as UserDetailDto;
+    try {
+      const user = await this.prisma.user.findFirstOrThrow({
+        where: { id },
+        include: {
+          userDevices: {
+            include: {
+              device: true,
+            },
+          },
+        },
+      });
+      const deviceNames: string[] = user.userDevices.map(
+        (device) => device.device.name,
+      );
+      console.log('deviceName : ', deviceNames);
+      return {
+        id: user.id,
+        userRole: ROLE[user.userRole],
+        userName: user.userName,
+        userEmail: user.userEmail,
+        userImage: user.userImage,
+        devices: deviceNames,
+      } as UserDetailDto;
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async updateUserDetail(

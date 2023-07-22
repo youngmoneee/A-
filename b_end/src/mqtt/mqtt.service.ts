@@ -72,9 +72,7 @@ export class MqttService implements OnModuleInit {
           device: true,
         },
       });
-      console.log(res);
-      const deviceNames: string[] = res.map((device) => device.device.name);
-      return deviceNames;
+      return res.map((device) => device.device.name);
     } catch (e) {
       console.error(e);
     }
