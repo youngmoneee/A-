@@ -16,7 +16,7 @@ import { useAuthStore } from '@/store/auth';
 import axios from 'axios';
 import { ref } from 'vue';
 
-const $auth = useAuthStore();
+const {token} = useAuthStore();
 let text = ref('');
 let fileRef = ref(null);
 
@@ -33,7 +33,7 @@ const submit = async () => {
   fileRef.value = null;
   await axios.post('/api/chat', form, {
     headers: {
-      Authorization: `Bearer ${$auth.token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
   }).then(() => {

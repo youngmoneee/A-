@@ -16,23 +16,33 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth';
-import { computed } from 'vue';
-import { storeToRefs } from 'pinia';
+import { computed, onMounted, reactive } from 'vue';
 import router from '@/router';
+import axios from 'axios';
 
-const auth = useAuthStore();
-const { token, isAuthed } = storeToRefs(auth);
+const { token, isAuthed, logout } = useAuthStore();
+let data = reactive([]);
 
-const mock = ['dev1', 'dev2'];
-
+onMounted(async () => {
+  try {
+    const response = await axios.get('/api/mqtt/device', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    response.data.forEach((value) => data.push(value));
+    if (isAuthed()) data.push('info', 'logout');
+  } catch (e) {
+    console.log(e);
+  }
+});
 const navbar = computed(() => {
-  const items = mock;
-  if (isAuthed) return items.concat(['info', 'logout']);
-  return items;
+  if (!isAuthed()) return [];
+  return data;
 });
 const navigate = (item: string) => {
   if (item === 'logout') {
-    auth.logout();
+    logout();
     router.push('/');
   }
   else if (item === 'info') router.push('/info');

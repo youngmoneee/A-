@@ -1,25 +1,22 @@
 import { defineStore } from 'pinia';
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/store/auth';
+import { computed, ref } from 'vue';
 
-export const useSocketStore = defineStore('socket', {
-  state: () => ({
-    socket: null as Socket | null,
-  }),
-  actions: {
-    sockInit() {
-      const $auth = useAuthStore();
-      $auth.parseToken();
-      this.socket = io('/', {
-        query: {
-          token: $auth.$state.token,
-        },
-      });
-    },
-    getSock() {
-      if (!this.socket) this.sockInit();
-      if (this.socket?.disconnected) this.sockInit();
-      return this.socket as Socket;
-    },
-  },
+export const useSocketStore = defineStore('socket', () => {
+  const sock = ref(sockInit());
+  function sockInit(): Socket {
+    const { token } = useAuthStore();
+    const res = io('/', {
+      query: {
+        token: token,
+      },
+    });
+    return res;
+  }
+  const socket = computed(() => {
+    if (sock.value.disconnected) sock.value = sockInit();
+    return sock.value;
+  });
+  return { socket };
 });
