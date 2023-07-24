@@ -54,12 +54,13 @@ const addNewLine = () => {
 
 <style scoped>
 .chat-send {
-  flex-basis: 30px;
+  width: 100%;
   display: flex;
   align-items: stretch;
 }
 textarea {
-  flex-grow: 8;
+  flex-grow: 1;
+  flex-shrink: 1;
   resize: none;
   padding: 8px;
   border: 1px solid #ccc;
@@ -68,8 +69,9 @@ textarea {
 }
 
 .file-input-label, .submit-label {
-  flex-grow: 1;
-  flex-basis: 0;
+  flex-basis: 10%;
+  flex-grow: 0;
+  flex-grow: 0;
   margin-left: 1px;
   padding: 16px 8px;
   border: none;

@@ -1,5 +1,5 @@
 <template>
-<div class='display-div'>
+<div class='RouterView'>
   <router-view />
 </div>
 </template>
@@ -8,10 +8,8 @@
 </script>
 
 <style scoped>
-.display-div {
-  background-image: url('/src/assets/bg.png');
-  object-fit: contain;
-  justify-content: center;
-  padding: 10px;
+.RouterView {
+  display: flex;
+  height: 100%;
 }
 </style>

@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <canvas ref="chart"/>
-  </div>
+  <canvas ref="chart"/>
 </template>
 
 <script setup lang="ts">
@@ -21,6 +19,15 @@ const props = defineProps({
 const chart = ref(null);
 let chartInstance: any = null;
 
+//  TODO : REMOVE
+const resizeChart = () => {
+  if (chartInstance) {
+    chartInstance.resize();
+    chartInstance.update('none');
+  }
+};
+
+
 onMounted(() => {
   const context = chart.value?.getContext('2d');
   chartInstance = new Chart(context, {
@@ -29,7 +36,7 @@ onMounted(() => {
       labels: sensorData.getLabel(props.topic) || [],
       datasets: [
         {
-          label: props.topic,
+          label: props.topic?.split('/').slice(1).join('/'),
           backgroundColor: '#f87979',
           data: sensorData.sensorData?.get(props.topic) || [],
           fill: false,
@@ -38,11 +45,15 @@ onMounted(() => {
       ]
     },
   });
+  //  TODO : REMOVE
+  window.addEventListener('resize', resizeChart);
 });
 onUnmounted(() => {
   if (chartInstance) {
     chartInstance.destroy();
   }
+  //  TODO : REMOVE
+  window.removeEventListener('resize', resizeChart);
 });
 watch(() => sensorData.getAllData().get(props.topic) as number[], (newData : number[]) => {
   if (chartInstance) {
@@ -54,5 +65,9 @@ watch(() => sensorData.getAllData().get(props.topic) as number[], (newData : num
 
 </script>
 <style scoped>
-
+canvas {
+  display: flex;
+  width: 100%;
+  height: 50%;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class='chat-div'>
+  <div>
     <ChatList />
     <ChatSend />
   </div>
@@ -10,10 +10,4 @@ import ChatSend from '@/components/chat/ChatSend.vue';
 </script>
 
 <style scoped>
-.chat-div {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background: blue;
-}
 </style>

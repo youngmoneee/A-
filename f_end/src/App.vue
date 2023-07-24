@@ -1,8 +1,8 @@
 <template>
   <div class='index'>
-    <SideNav />
-    <LoginModal v-if='!isAuthed()' />
-    <MainContainer />
+    <SideNav class='SideNav' />
+    <MainContainer class='MainContainer' />
+    <LoginModal v-if='!isAuthed()' class='LoginModal' />
   </div>
 </template>
 
@@ -35,5 +35,17 @@ div {
 }
 .index {
   display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  height: 100vh;
+}
+.SideNav {
+  width: 80px;
+}
+.MainContainer {
+  flex-grow: 1;
+}
+.LoginModal {
+  z-index: 99;
 }
 </style>

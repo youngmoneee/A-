@@ -19,7 +19,9 @@
       </div>
       <div class='user-device'>
         <div class='device-label'>User Device</div>
-        <li v-for='key in data.devices' :key='key'>{{ key }}</li>
+        <div class='devices'>
+          <li v-for='key in data.devices' :key='key'>{{ key }}</li>
+        </div>
       </div>
     </div>
   </div>
@@ -51,11 +53,13 @@ onMounted(async () => {
 <style scoped>
 .user-info {
   display: flex;
+  width: 300px;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 300px;
-  height: 100%;
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 20px;
@@ -63,37 +67,40 @@ onMounted(async () => {
   background: rgba(255, 255, 255, 0.00);
   box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
   -webkit-backdrop-filter: blur(3px);
+  font-size: 14px;
 }
 .title {
-  margin: 20px;
-  font-size: 24px;
+  display: flex;
+  margin: 0.5rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 .user-img-container {
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
-  border-radius: 50%;
-  margin-bottom: 20px;
+  display: flex;
+  width: 6rem;
+  height: 6rem;
 }
 .user-image {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   object-fit: cover;
 }
 .user-details {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
   width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
 }
 .user-data-row {
   display: flex;
   justify-content: space-between;
   width: 100%;
   border-bottom: 1px solid lightgrey;
-  padding: 5px 0;
+  padding: 0.5rem 0;
 }
 .user-data-label {
   font-weight: bold;
@@ -108,11 +115,19 @@ onMounted(async () => {
   width: 100%;
   border-bottom: 1px solid lightgrey;
   padding: 5px;
-  margin-bottom: 10px;
+  #margin-bottom: 5px;
 }
 .user-device {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+}
+.devices {
+  display: flex;
+  flex-direction: column;
   list-style: none;
   padding: 0;
+  max-height: 2.5em;
+  overflow-y: auto;
 }
 </style>
