@@ -10,6 +10,8 @@
 
 <style scoped>
 .index {
+  display: flex;
+  height: 100%;
   background-color: aqua;
 }
 </style>

@@ -61,8 +61,6 @@ const navigate = (item: string) => {
   align-items: center;
   top: 0px;
   left: 0px;
-  flex-basis: 50px;
-  flex-shrink: 0;
   height: 100vh;
 }
 .nav-item {
