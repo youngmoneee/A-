@@ -53,7 +53,8 @@ onMounted(async () => {
 <style scoped>
 .user-info {
   display: flex;
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
   height: 100%;
   max-height: 100%;
   overflow-y: auto;
