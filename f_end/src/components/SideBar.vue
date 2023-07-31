@@ -50,7 +50,6 @@ const navigate = (item: string) => {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .nav-bar {
   background-image: url('/src/assets/iphone.png');
