@@ -28,6 +28,7 @@ export class UserService {
     const user: User = await this.prisma.user.findFirst({
       where: { userId, provider },
     });
+    if (!user) return null;
     return {
       id: user.id,
       userRole: user.userRole,
