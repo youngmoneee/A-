@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./b_end
+      dockerfile: Dockerfile.prod
+    container_name: backend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - statics:/b_end/uploads
+    depends_on:
+      - mongo
+      - database
+
+  frontend:
+    build:
+      context: ./f_end
+      dockerfile: Dockerfile.prod
+    container_name: frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - html:/f_end/dist
+
+  database:
+    image: postgres:13
+    container_name: database
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.prod
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - statics:/usr/share/nginx/static
+      - html:/usr/share/nginx/html
+
+  mosquitto:
+    build: ./mosqt
+    container_name: mosquitto
+    restart: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+
+  mongo:
+    build: ./mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+
+volumes:
+  db-data:
+  statics:
+  html:
