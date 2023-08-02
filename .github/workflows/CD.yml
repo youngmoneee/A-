@@ -1,12 +1,18 @@
 name: Deploy to GCP instance
 
 on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - release
   push:
     branches:
       - release
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'dev'
     runs-on: ubuntu-latest
 
     steps:
