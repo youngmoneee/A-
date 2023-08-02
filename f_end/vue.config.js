@@ -9,16 +9,15 @@ module.exports = {
   },
   chainWebpack: (config) => {
     config.plugin('html').tap((args) => {
-      args[0].title = 'My App';
+      args[0].title = 'A-';
       return args;
     });
   },
   pwa: {
-    name: 'My App',
+    name: 'A-',
   },
   pluginOptions: {
     lintStyleOnBuild: true,
     stylelint: {},
   },
 };
-
