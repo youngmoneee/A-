@@ -26,7 +26,7 @@ jobs:
         username: ${{ secrets.GCP_ID }}
         key: ${{ secrets.GCP_SSH_KEY }}
         source: "."
-        target: "/A-"
+        target: "/home/${{ secrets.GCP_ID }}/A-"
 
     - name: Deploy(docker-compose)
       uses: appleboy/ssh-action@master
