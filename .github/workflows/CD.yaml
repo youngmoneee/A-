@@ -1,4 +1,4 @@
-name: Deploy to GCP instance
+name: CD workflows
 
 on:
   pull_request:
