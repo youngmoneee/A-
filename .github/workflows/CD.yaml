@@ -35,6 +35,6 @@ jobs:
         username: ${{ secrets.GCP_ID }}
         key: ${{ secrets.GCP_SSH_KEY }}
         script: |
-          cd /A-
+          cd /home/${{ secrets.GCP_ID }}/A-
           docker-compose down
           docker-compose up -d
