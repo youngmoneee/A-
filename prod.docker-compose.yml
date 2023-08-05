@@ -53,6 +53,7 @@ services:
     volumes:
       - statics:/usr/share/nginx/static
       - html:/usr/share/nginx/html
+      - /etc/letsencrypt:/usr/share/nginx/ssl
 
   mosquitto:
     build: ./mosqt
