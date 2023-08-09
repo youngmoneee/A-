@@ -6,8 +6,5 @@ ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.s
 COPY package*.json .
 RUN npm install && chmod +x wait-for-it.sh
 COPY . .
-#RUN npm run build
 
-EXPOSE 3000
-
-CMD ["bash", "-c", "./wait-for-it.sh database:5432 -t 60 -- npx prisma generate && npm run build && npm run start:prod"]
+CMD ["bash", "-c", "./wait-for-it.sh database:5432 -t 60 -- npx prisma db push && npx prisma generate && npm run build && npm run start:prod"]
