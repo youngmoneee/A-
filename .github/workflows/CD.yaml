@@ -37,4 +37,4 @@ jobs:
         script: |
           cd /home/${{ secrets.GCP_ID }}/A-
           docker-compose -f prod.docker-compose.yml down
-          docker-compose -f prod.docker-compose.yml up -d
+          docker-compose -f prod.docker-compose.yml up --build -d
