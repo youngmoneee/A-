@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile.prod
     container_name: backend
     restart: always
-    ports:
-      - "3000:3000"
     volumes:
       - statics:/b_end/uploads
     depends_on:
@@ -22,10 +20,10 @@ services:
       context: ./f_end
       dockerfile: Dockerfile.prod
     container_name: frontend
-    ports:
-      - "8080:8080"
     volumes:
       - html:/f_end/dist
+    env_file:
+      - .env
 
   database:
     image: postgres:13
@@ -54,7 +52,7 @@ services:
     volumes:
       - statics:/usr/share/nginx/static
       - html:/usr/share/nginx/html
-      - /etc/letsencrypt:/usr/share/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt
 
   mosquitto:
     build: ./mosqt
@@ -68,8 +66,6 @@ services:
     build: ./mongo
     container_name: mongo
     restart: always
-    ports:
-      - "27017:27017"
 
 volumes:
   db-data:
