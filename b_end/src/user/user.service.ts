@@ -51,7 +51,6 @@ export class UserService {
       const deviceNames: string[] = user.userDevices.map(
         (device) => device.device.name,
       );
-      console.log('deviceName : ', deviceNames);
       return {
         id: user.id,
         userRole: ROLE[user.userRole],

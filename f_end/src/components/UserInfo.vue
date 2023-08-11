@@ -43,7 +43,6 @@ onMounted(async () => {
       }
     });
     data.value = response.data;
-    console.log(data.value);
   } catch (e) {
     console.log(e);
   }

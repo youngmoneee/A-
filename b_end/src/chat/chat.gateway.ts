@@ -42,7 +42,6 @@ export class ChatGateway implements OnGatewayConnection {
       fileUrl: chatSchema.fileUrl,
       msg: chatSchema.msg,
     };
-    this.logger.debug(`Called ${this.publish.name}`);
     this.server.emit('chat', chat);
   }
 }
