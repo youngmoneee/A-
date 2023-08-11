@@ -36,19 +36,4 @@ export class MqttController {
     this.mqttService.remoteDevice(`${device}/input`, command);
     return HttpStatus.OK;
   }
-
-  @Get('test')
-  test(@Query('val', ParseIntPipe) val: number) {
-    this.mqttService.pubWS('dev2', {
-      topic: 'dev2/hi',
-      value: val,
-    });
-  }
-  @Get('test2')
-  test2(@Query('val', ParseIntPipe) val: number) {
-    this.mqttService.pubWS('dev2', {
-      topic: 'dev2/zzz/qwe',
-      value: val,
-    });
-  }
 }
