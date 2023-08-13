@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { MqttService } from './mqtt.service';
@@ -22,7 +23,7 @@ export class MqttController {
   }
   @Post('device')
   async register(@GetUser() user, @Body('device') device) {
-    await this.mqttService.deviceRegister(user.id, device);
+    return await this.mqttService.deviceRegister(user.id, device);
   }
 
   @Get('device/:device')
