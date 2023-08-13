@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import IndexPage from '@/components/index/IndexPage.vue';
 import UserInfo from '@/components/UserInfo.vue';
 import DeviceController from '@/components/DeviceController.vue';
+import RegisterDevice from '@/views/RegisterDevice.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Device',
     component: DeviceController,
     props: true,
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegisterDevice,
   },
   {
     path: '/info',
