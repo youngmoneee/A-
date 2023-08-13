@@ -85,44 +85,49 @@ export class MqttService implements OnModuleInit {
       console.error(e);
     }
   }
-  async deviceRegister(userId: number, device: string) {
-    try {
-      //  없으면 생성
-      const res = await this.prismaService.device.upsert({
-        where: { name: device },
-        update: {},
-        create: {
-          name: device,
+  async deviceRegister(userId: number, deviceName: string) {
+    //  이미 관계가 존재하면 아무 일도 일어나지 않음
+    if (deviceName in (await this.deviceNames(userId))) return HttpStatus.OK;
+    let device = await this.prismaService.device.findUnique({
+      where: { name: deviceName },
+    });
+    if (!device) {
+      // 장치가 없으면 생성, 생성자가 admin
+      device = await this.prismaService.device.create({
+        data: {
+          name: deviceName,
           adminId: userId,
         },
       });
-      //  관계 생성
-      try {
-        await this.prismaService.userDevice.create({
-          data: {
-            userId,
-            deviceId: res.id,
-          },
-        });
-      } catch (e) {
-        console.error(e);
-      }
-      return res.name;
+    }
+
+    // 관계 생성
+    try {
+      await this.prismaService.userDevice.create({
+        data: {
+          userId,
+          deviceId: device.id,
+        },
+      });
     } catch (e) {
       console.error(e);
+      return HttpStatus.NOT_FOUND;
     }
+
     this.client
-      .subscribe(`${device}/#`, (err) => {
+      .subscribe(`${deviceName}/#`, (err) => {
         if (err) {
           console.error('Failed to subscribe to topic:', err);
         }
       })
       .on('message', (topic, msg) => {
-        this.mqttGateway.publish(device, {
+        this.mqttGateway.publish(deviceName, {
           topic: topic,
           value: Number(msg.toString()),
         });
       });
+
+    return HttpStatus.OK;
   }
 
   async getDeviceInfo(id: number) {

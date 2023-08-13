@@ -16,12 +16,14 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth';
-import { computed, onMounted, reactive } from 'vue';
+import { computed, onMounted, reactive, watch } from 'vue';
 import router from '@/router';
 import axios from 'axios';
+import { useRoute } from 'vue-router';
 
 const { token, isAuthed, logout } = useAuthStore();
-let data = reactive([]);
+let data = reactive([] as Array<string>);
+const route = useRoute();
 
 onMounted(async () => {
   try {
@@ -31,11 +33,29 @@ onMounted(async () => {
       }
     });
     response.data.forEach((value) => data.push(value));
-    if (isAuthed()) data.push('info', 'logout');
+    if (isAuthed()) data.push('register', 'info', 'logout');
   } catch (e) {
     console.log(e);
   }
 });
+
+watch(route, async (to, from) => {
+  // 페이지가 이동될 때마다 실행되는 로직
+  try {
+    const response = await axios.get('/api/mqtt/device', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+    data.length = 0;
+    response.data.forEach((value) => data.push(value));
+    if (isAuthed()) data.push('register', 'info', 'logout');
+  } catch (e) {
+    console.log(e);
+  }
+}, { deep: true });
+
 const navbar = computed(() => {
   if (!isAuthed()) return [];
   return data;
@@ -46,6 +66,7 @@ const navigate = (item: string) => {
     router.push('/');
   }
   else if (item === 'info') router.push('/info');
+  else if (item === 'register') router.push('/register');
   else router.push(`/device/${item}`);
 }
 </script>
