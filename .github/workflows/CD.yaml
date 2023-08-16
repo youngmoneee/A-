@@ -36,5 +36,5 @@ jobs:
         key: ${{ secrets.GCP_SSH_KEY }}
         script: |
           cd /home/${{ secrets.GCP_ID }}/A-
-          docker-compose -f prod.docker-compose.yml down
+          docker-compose -f prod.docker-compose.yml down && docker volume rm a-_html
           docker-compose -f prod.docker-compose.yml up --build -d
