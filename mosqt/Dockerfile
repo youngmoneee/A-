@@ -11,7 +11,6 @@ RUN mkdir /var/run/mosquitto \
 
 # 브로커가 사용할 포트 노출
 EXPOSE 1883
-EXPOSE 9001
 
 # Mosquitto 실행
 CMD ["/usr/sbin/mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]

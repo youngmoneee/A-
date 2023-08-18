@@ -14,9 +14,7 @@ import { PrismaService } from './prisma.service';
   imports: [
     ConfigModule.forRoot({
       envFilePath:
-        process.env.NODE_ENV === 'prod'
-          ? 'src/config/.prod.env'
-          : 'src/config/.dev.env',
+        process.env.NODE_ENV === 'prod' ? undefined : 'src/config/.dev.env',
     }),
     UserModule,
     AuthModule,
