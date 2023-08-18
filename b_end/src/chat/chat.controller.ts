@@ -17,6 +17,7 @@ import { JwtGuard } from '../auth/guard/jwt.guard';
 import { ChatGateway } from './chat.gateway';
 import { Chat } from '../dto/createChatDto';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOperation,
@@ -39,6 +40,7 @@ export class ChatController {
     return await this.chatService.findAll();
   }
 
+  @ApiBearerAuth()
   @ApiOperation({
     summary: '채팅 전송',
     description:
