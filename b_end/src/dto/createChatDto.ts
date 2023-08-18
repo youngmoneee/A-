@@ -36,11 +36,11 @@ export class Chat {
   @Prop({ type: Object })
   user: UserDto;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Prop({ type: String, required: false })
   msg?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Prop({ type: String, required: false })
   fileUrl?: string;
 }
