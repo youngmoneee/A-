@@ -40,7 +40,7 @@ export class AuthController {
     type: UserDto,
   })
   @ApiUnauthorizedResponse({
-    description: '인증되지 않은 요청 시 401 반환',
+    description: '인증되지 않은 클라이언트의 요청 시 401 반환',
   })
   @Get()
   @UseGuards(JwtGuard)
