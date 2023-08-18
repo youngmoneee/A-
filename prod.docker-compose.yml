@@ -12,6 +12,7 @@ services:
     depends_on:
       - mongo
       - database
+      - mosquitto
     env_file:
       - .env
 
