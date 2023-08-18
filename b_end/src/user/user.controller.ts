@@ -36,7 +36,7 @@ export class UserController {
     type: UserDetailDto,
   })
   @ApiUnauthorizedResponse({
-    description: '인증되지 않은 유저가 요청 시 401 반환',
+    description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
   @Get()
   async getMyInfo(@GetUser() user: UserDto): Promise<UserDetailDto> {
@@ -49,7 +49,7 @@ export class UserController {
     type: UserDetailDto,
   })
   @ApiUnauthorizedResponse({
-    description: '인증되지 않은 유저가 요청 시 401 반환',
+    description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
   @ApiNotFoundResponse({
     description: '존재하지 않는 유저를 조회하려고 시도 시, 404 반환',
