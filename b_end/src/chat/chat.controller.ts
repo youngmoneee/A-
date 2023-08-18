@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  HttpStatus,
   Logger,
   Post,
   Req,
@@ -15,7 +16,15 @@ import { UserDto } from '../dto/user.dto';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { ChatGateway } from './chat.gateway';
 import { Chat } from '../dto/createChatDto';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Chatting')
 @Controller('chat')
 @UseGuards(JwtGuard)
 export class ChatController {
@@ -29,6 +38,16 @@ export class ChatController {
     this.logger.debug(`Called ${this.findAll.name}`);
     return await this.chatService.findAll();
   }
+
+  @ApiOperation({
+    summary: '채팅 전송',
+    description:
+      '파일을 함께 보냈다면 서버 스토리지에 저장 후, 메세지와 파일 Url을 Socket.io로 Pub',
+  })
+  @ApiBody({ description: '메세지 본문', type: Chat })
+  @ApiCreatedResponse({
+    description: '성공적으로 전송됨',
+  })
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async sendMessage(
@@ -46,5 +65,6 @@ export class ChatController {
     };
     const res = await this.chatService.create(chatSchema);
     await this.chatGateway.publish(res);
+    return HttpStatus.CREATED;
   }
 }
