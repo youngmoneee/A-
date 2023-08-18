@@ -21,8 +21,8 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 @ApiTags('Chatting')
@@ -49,6 +49,9 @@ export class ChatController {
   @ApiBody({ description: '메세지 본문', type: Chat })
   @ApiCreatedResponse({
     description: '성공적으로 전송됨',
+  })
+  @ApiUnauthorizedResponse({
+    description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
   @Post()
   @UseInterceptors(FileInterceptor('file'))
