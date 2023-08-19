@@ -31,21 +31,18 @@
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth';
+import router from '@/router';
 
-const { token } = useAuthStore();
+const { token, isAuthed } = useAuthStore();
 const data = ref({});
 
 onMounted(async () => {
-  try {
-    const response = await axios.get('/api/user', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
-    data.value = response.data;
-  } catch (e) {
-    console.log(e);
-  }
+  if (!isAuthed) await router.push('/');
+  await axios.get('/api/user', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }).then(response => data.value = response.data);
 });
 </script>
 
