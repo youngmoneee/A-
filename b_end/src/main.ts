@@ -18,7 +18,7 @@ async function bootstrap() {
     )
     .build();
   SwaggerModule.setup(
-    'docs',
+    'api/docs',
     app,
     SwaggerModule.createDocument(app, apiConfig),
   );
