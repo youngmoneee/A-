@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Users Info')
-@ApiBearerAuth()
+@ApiBearerAuth('accessToken')
 @Controller('user')
 @UseGuards(JwtGuard)
 export class UserController {

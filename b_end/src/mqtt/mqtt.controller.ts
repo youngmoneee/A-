@@ -31,7 +31,7 @@ import { DeviceDto } from '../dto/device.dto';
 import { UserDto } from '../dto/user.dto';
 
 @ApiTags('Device')
-@ApiBearerAuth()
+@ApiBearerAuth('accessToken')
 @Controller('mqtt')
 @UseGuards(JwtGuard)
 export class MqttController {

@@ -26,6 +26,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Chatting')
+@ApiBearerAuth('accessToken')
 @Controller('chat')
 @UseGuards(JwtGuard)
 export class ChatController {
@@ -40,7 +41,6 @@ export class ChatController {
     return await this.chatService.findAll();
   }
 
-  @ApiBearerAuth()
   @ApiOperation({
     summary: '채팅 전송',
     description:

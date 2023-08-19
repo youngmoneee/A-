@@ -12,7 +12,6 @@ import {
   ApiOAuth2,
   ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -29,7 +28,7 @@ export class AuthController {
   private logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('accessToken')
   @ApiOperation({
     summary: '유저 인증 여부 확인',
     description:
