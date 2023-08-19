@@ -2,21 +2,22 @@
   <div class='index'>
     <SideNav class='SideNav' />
     <MainContainer class='MainContainer' />
-    <LoginModal v-if='!isAuthed()' class='LoginModal' />
+    <LoginModal class='LoginModal' />
   </div>
 </template>
 
-<script setup>
+<script setup lang='ts'>
 import SideNav from '@/components/SideBar.vue';
 import LoginModal from '@/components/login/LoginModal.vue';
 import MainContainer from '@/components/MainContainer.vue';
 import { useAuthStore } from '@/store/auth';
-import { onMounted } from 'vue';
+import { onBeforeMount } from 'vue';
 
-const { isAuthed, parseToken } = useAuthStore();
-onMounted(() => {
-  parseToken();
-});
+const { check } = useAuthStore();
+
+onBeforeMount(async () => {
+  await check();
+})
 </script>
 <style>
 #app {

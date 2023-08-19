@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', () => {
   const tok = ref('');
@@ -7,9 +8,24 @@ export const useAuthStore = defineStore('auth', () => {
     parseToken();
     return tok.value;
   });
-  function isAuthed() {
-    return tok.value !== '';
+  async function check() {
+    parseToken();
+    await axios
+      .get('/api/auth', {
+        headers: {
+          Authorization: `Bearer ${tok.value}`,
+        },
+      })
+      .then(() => {
+        parseToken();
+      })
+      .catch((e) => {
+        if (e.response && e.response.status === 401) tok.value = '';
+      });
   }
+  const isAuthed = computed(() => {
+    return tok.value !== '';
+  });
   function parseCookies(): { [key: string]: string } {
     return document.cookie
       .split(';')
@@ -27,5 +43,5 @@ export const useAuthStore = defineStore('auth', () => {
     tok.value = '';
   }
 
-  return { token, isAuthed, logout, parseToken };
+  return { token, isAuthed, logout, check };
 });

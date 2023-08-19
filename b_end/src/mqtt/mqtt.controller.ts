@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -13,9 +15,11 @@ import { GetUser } from '../user/user.decorator';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import {
   ApiBadGatewayResponse,
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -24,9 +28,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { DeviceDto } from '../dto/device.dto';
+import { UserDto } from '../dto/user.dto';
 
 @ApiTags('Device')
-@ApiBearerAuth()
+@ApiBearerAuth('accessToken')
 @Controller('mqtt')
 @UseGuards(JwtGuard)
 export class MqttController {
@@ -73,9 +78,8 @@ export class MqttController {
   }
 
   @ApiOperation({
-    summary: '유저가 등록한 기기 리스트에 해당 기기를 추가',
-    description:
-      '기존 기기일 경우 Device의 유저 목록에 추가, 새로운 기기일 경우 Device의 Admin을 해당 유저로 등록',
+    summary: '기기의 상세 정보 조회',
+    description: '파라미터로 들어오는 device ID를 통해 기기의 상세 정보를 조회',
   })
   @ApiParam({
     name: 'device',
@@ -83,13 +87,14 @@ export class MqttController {
     type: 'number',
   })
   @ApiOkResponse({ description: '기기의 정보 반환', type: DeviceDto })
+  @ApiBadRequestResponse({ description: 'string이 들어왔을 경우 400 반환' })
   @ApiUnauthorizedResponse({
     description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
   @ApiNotFoundResponse({ description: '기기가 존재하지 않을 시 404 반환' })
   @Get('device/:device')
-  deviceDetail(@Param('device', ParseIntPipe) device: number) {
-    return this.mqttService.getDeviceInfo(device);
+  async deviceDetail(@Param('device', ParseIntPipe) device: number) {
+    return await this.mqttService.getDeviceInfo(device);
   }
 
   @ApiOperation({
@@ -117,6 +122,37 @@ export class MqttController {
   @Post('device/:device')
   deviceRemote(@Param('device') device: string, @Body('command') command) {
     this.mqttService.remoteDevice(`${device}/input`, command);
-    return HttpStatus.OK;
+    return HttpStatus.NO_CONTENT;
+  }
+
+  @ApiOperation({
+    summary: '유저의 등록 기기 목록 중 특정 기기를 제거',
+    description:
+      'Device 이름을 Param으로 받아, 요청을 보낸 클라이언트가 등록한 기기 목록에서 제거',
+  })
+  @ApiParam({
+    name: 'device',
+    description: '제거하려는 device의 이름',
+    type: 'string',
+  })
+  @ApiNoContentResponse({
+    description:
+      '유저가 등록한 기기 목록 중, 해당 기기가 없거나 기기 제거가 완료 되었다면, 204 반환',
+  })
+  @ApiUnauthorizedResponse({
+    description: '권한이 없는 요청에 대해 UnAuthentication 반환',
+  })
+  @ApiBadGatewayResponse({ description: 'DB 에러 시 502 반환' })
+  @Delete('device/:device')
+  async deviceRemove(
+    @GetUser() user: UserDto,
+    @Param('device') device: string,
+  ) {
+    try {
+      await this.mqttService.removeDevice(user.id, device);
+    } catch (e) {
+      return HttpStatus.BAD_GATEWAY;
+    }
+    return HttpStatus.NO_CONTENT;
   }
 }

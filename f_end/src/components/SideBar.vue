@@ -25,39 +25,34 @@ const { token, isAuthed, logout } = useAuthStore();
 let data = reactive([] as Array<string>);
 const route = useRoute();
 
+/*
 onMounted(async () => {
-  try {
-    const response = await axios.get('/api/mqtt/device', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
-    response.data.forEach((value) => data.push(value));
-    if (isAuthed()) data.push('register', 'info', 'logout');
-  } catch (e) {
-    console.log(e);
-  }
-});
-
-watch(route, async (to, from) => {
-  // 페이지가 이동될 때마다 실행되는 로직
-  try {
-    const response = await axios.get('/api/mqtt/device', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
-
+  await axios.get('/api/mqtt/device', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }).then(response => {
     data.length = 0;
     response.data.forEach((value) => data.push(value));
     if (isAuthed()) data.push('register', 'info', 'logout');
-  } catch (e) {
-    console.log(e);
-  }
+  }).catch(e => data.length = 0);
+});
+*/
+watch(route, async (from, to) => {
+  // 페이지가 이동될 때마다 실행되는 로직
+    await axios.get('/api/mqtt/device', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }).then(async response => {
+      data.length = 0;
+      response.data.forEach((value) => data.push(value));
+      data.push('register', 'info', 'logout');
+    }).catch(e => router.push('/'));
 }, { deep: true });
 
 const navbar = computed(() => {
-  if (!isAuthed()) return [];
+  if (!isAuthed) return [];
   return data;
 });
 const navigate = (item: string) => {

@@ -14,13 +14,11 @@ export const useSensorData = defineStore('sensor', {
     deviceSubscribe(device: string) {
       const { socket } = useSocketStore();
 
-      console.log(`subscribe ${device}`);
       socket.on(device, (obj: any) => this.updateTopic(obj.topic, obj.value));
     },
     deviceUnSubscribe(device: string) {
       const { socket } = useSocketStore();
 
-      console.log(`unsubscribe ${device}`);
       socket.off(device);
       this.sensorData.clear();
     },
@@ -37,9 +35,7 @@ export const useSensorData = defineStore('sensor', {
     getLabel(topic: string) {
       const labels: Array<number> = this.sensorData.get(topic)?.slice() || [];
 
-      return labels.map((_, idx) => (
-          idx - labels.length + 1) * 5 + ' s'
-        );
-    }
+      return labels.map((_, idx) => (idx - labels.length + 1) * 5 + ' s');
+    },
   },
 });
