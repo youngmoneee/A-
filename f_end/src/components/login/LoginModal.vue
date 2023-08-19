@@ -1,26 +1,19 @@
 <template>
-  <div v-if ='isOpen' class='bg-black'>
+  <div v-if='!isAuthed' class='bg-black'>
     <div class="bg-white">
       <h1> L o g i n </h1>
       <KakaoButton class='button'/>
       <GoogleButton class='button'/>
-      <div
-        class='close'
-        @click='closeModal'
-      >
-        close
-      </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang='ts'>
 import KakaoButton from '@/components/login/KakaoButton.vue';
 import GoogleButton from '@/components/login/GoogleButton.vue';
-import { ref } from 'vue';
+import { useAuthStore } from '@/store/auth';
 
-const isOpen = ref(true);
-const closeModal = () => isOpen.value = false;
+const { isAuthed } = useAuthStore();
 </script>
 
 <style scoped>

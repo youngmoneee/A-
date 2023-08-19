@@ -20,7 +20,10 @@
       <div class='user-device'>
         <div class='device-label'>User Device</div>
         <div class='devices'>
-          <li v-for='key in data.devices' :key='key'>{{ key }}</li>
+          <li v-for='key in data.devices' :key='key'>
+            {{ key }}
+            <button class="remove-btn" @click="remove(key)">x</button>
+          </li>
         </div>
       </div>
     </div>
@@ -31,22 +34,26 @@
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth';
+import router from '@/router';
 
-const { token } = useAuthStore();
+const { token, isAuthed } = useAuthStore();
 const data = ref({});
 
 onMounted(async () => {
-  try {
-    const response = await axios.get('/api/user', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
-    data.value = response.data;
-  } catch (e) {
-    console.log(e);
-  }
+  if (!isAuthed) await router.push('/');
+  await axios.get('/api/user', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }).then(response => data.value = response.data);
 });
+const remove = async (device) => {
+  await axios.delete(`api/mqtt/device/${device}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  }).then(()=> router.go(0))
+};
 </script>
 
 <style scoped>
@@ -129,5 +136,16 @@ onMounted(async () => {
   padding: 0;
   max-height: 2.5em;
   overflow-y: auto;
+}
+.remove-btn {
+  background-color: rgba(0,0,0,0);
+  color: gray;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
 }
 </style>

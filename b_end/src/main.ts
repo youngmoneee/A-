@@ -6,18 +6,19 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   const apiConfig = new DocumentBuilder()
     .setTitle('A-')
     .setDescription('Api Documentaion')
     .setVersion('1.0')
-    .setContact('youngmon', '/', 'zsh@duck.com')
+    .setContact('youngmon', 'https://youngmon.app', 'zsh@duck.com')
     .addBearerAuth(
-      { type: 'http', scheme: 'bearer', bearerFormat: 'Token' },
+      { type: 'http', in: 'header', scheme: 'bearer', bearerFormat: 'JWT' },
       'accessToken',
     )
     .build();
   SwaggerModule.setup(
-    'docs',
+    'api/docs',
     app,
     SwaggerModule.createDocument(app, apiConfig),
   );
