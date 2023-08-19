@@ -7,7 +7,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOAuth2,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { JwtGuard } from './guard/jwt.guard';
 import { GetUser } from '../user/user.decorator';
 import { KakaoGuard } from './guard/kakao.guard';
@@ -15,15 +23,24 @@ import { GoogleGuard } from './guard/google.guard';
 import { UserDto } from '../dto/user.dto';
 import { AuthInterceptor } from './auth.interceptor';
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   private logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
 
+  @ApiBearerAuth()
   @ApiOperation({
     summary: '유저 인증 여부 확인',
     description:
       '유저가 정상적으로 토큰을 보냈다면 토큰 검증을 통해 유저의 정보를 응답함',
+  })
+  @ApiOkResponse({
+    description: '유저 정보 반환',
+    type: UserDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: '인증되지 않은 클라이언트의 요청 시 401 반환',
   })
   @Get()
   @UseGuards(JwtGuard)
@@ -32,8 +49,11 @@ export class AuthController {
   }
 
   @ApiOperation({
-    summary: '로그인',
+    summary: '카카오 로그인',
     description: '카카오 로그인 페이지로 이동',
+  })
+  @ApiUnauthorizedResponse({
+    description: '인증 실패 시 401 반환',
   })
   @Get('kakao')
   @UseGuards(KakaoGuard)
@@ -43,8 +63,7 @@ export class AuthController {
 
   @ApiOperation({
     summary: '카카오 로그인 콜백',
-    description:
-      '카카오 로그인 성공 시 해당 페이지로 리다이렉트 후, 메인으로 이동',
+    description: '카카오 로그인 성공 시 쿠키(/)에 토큰 담아 /으로 이동',
   })
   @Get('kakao/cb')
   @UseGuards(KakaoGuard)
@@ -57,6 +76,9 @@ export class AuthController {
     summary: '로그인',
     description: '구글 로그인 페이지로 이동',
   })
+  @ApiUnauthorizedResponse({
+    description: '인증 실패 시 401 반환',
+  })
   @Get('google')
   @UseGuards(GoogleGuard)
   googleLogin(@Res() res) {
@@ -65,8 +87,7 @@ export class AuthController {
 
   @ApiOperation({
     summary: '구글 로그인 콜백',
-    description:
-      '구글 로그인 성공 시 해당 페이지로 리다이렉트 후, 메인으로 이동',
+    description: '구글 로그인 성공 시 쿠키(/)에 토큰 담아 /으로 이동',
   })
   @Get('google/cb')
   @UseGuards(GoogleGuard)
