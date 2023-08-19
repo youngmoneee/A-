@@ -123,6 +123,7 @@ export class MqttService implements OnModuleInit {
         }
       })
       .on('message', (topic, msg) => {
+        if (topic.split('/').pop() === 'input') return;
         this.mqttGateway.publish(deviceName, {
           topic: topic,
           value: Number(msg.toString()),
