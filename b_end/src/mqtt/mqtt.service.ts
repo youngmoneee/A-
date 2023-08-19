@@ -9,6 +9,8 @@ import * as mqtt from 'mqtt';
 import { MqttGateway } from './mqtt.gateway';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma.service';
+import { DeviceDto } from '../dto/device.dto';
+import { UserDto } from '../dto/user.dto';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
@@ -127,17 +129,51 @@ export class MqttService implements OnModuleInit {
         });
       });
 
-    return HttpStatus.OK;
+    return HttpStatus.CREATED;
   }
 
-  async getDeviceInfo(id: number) {
+  async getDeviceInfo(id: number): Promise<DeviceDto> {
     try {
-      const res = await this.prismaService.device.findFirst({
+      const device = await this.prismaService.device.findFirst({
         where: {
           id,
         },
+        include: {
+          userDevices: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  provider: true,
+                  userId: true,
+                  userName: true,
+                  userEmail: true,
+                  userImage: true,
+                  userRole: true,
+                },
+              },
+            },
+          },
+        },
       });
-      return res;
+      const users = device.userDevices.map((userDevice) => userDevice.user);
+      const userDtos = users.map((user) => {
+        return {
+          id: user.id,
+          provider: user.provider,
+          userId: user.userId,
+          userName: user.userName,
+          userEmail: user.userEmail,
+          userImage: user.userImage,
+          userRole: user.userRole,
+        } as UserDto;
+      });
+      return {
+        id: device.id,
+        name: device.name,
+        adminId: device.adminId,
+        user: userDtos,
+      } as DeviceDto;
     } catch (e) {
       throw new NotFoundException(`No Device ${id}`);
     }

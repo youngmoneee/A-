@@ -11,6 +11,10 @@ async function bootstrap() {
     .setDescription('Api Documentaion')
     .setVersion('1.0')
     .setContact('youngmon', '/', 'zsh@duck.com')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'Token' },
+      'accessToken',
+    )
     .build();
   SwaggerModule.setup(
     'docs',
