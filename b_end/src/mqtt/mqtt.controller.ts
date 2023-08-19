@@ -122,7 +122,7 @@ export class MqttController {
   @Post('device/:device')
   deviceRemote(@Param('device') device: string, @Body('command') command) {
     this.mqttService.remoteDevice(`${device}/input`, command);
-    return HttpStatus.OK;
+    return HttpStatus.NO_CONTENT;
   }
 
   @ApiOperation({
