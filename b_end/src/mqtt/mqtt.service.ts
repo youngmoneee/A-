@@ -178,4 +178,18 @@ export class MqttService implements OnModuleInit {
       throw new NotFoundException(`No Device ${id}`);
     }
   }
+  async removeDevice(userId: number, deviceName: string) {
+    const device = await this.prismaService.device.findFirst({
+      where: {
+        name: deviceName,
+      },
+    });
+    if (!device) return;
+    await this.prismaService.userDevice.deleteMany({
+      where: {
+        userId: userId,
+        deviceId: device.id,
+      },
+    });
+  }
 }
