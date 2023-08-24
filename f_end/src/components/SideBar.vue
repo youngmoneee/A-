@@ -45,11 +45,11 @@ const navbar = computed(() => {
 const navigate = (item: string) => {
   if (item === 'logout') {
     logout();
-    router.replace('/');
+    router.push('/');
   }
-  else if (item === 'info') router.replace('/info');
-  else if (item === 'register') router.replace('/register');
-  else router.replace(`/device/${item}`);
+  else if (item === 'info') router.push('/info');
+  else if (item === 'register') router.push('/register');
+  else router.push(`/device/${item}`);
 }
 </script>
 
