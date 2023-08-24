@@ -2,10 +2,9 @@
   <div class='device-controller'>
     <div class='title'>{{ props.name }}</div>
     <div class='chart-container'>
-      <div v-for="topic in Object.keys(sensorData?.sensorData || {})" :key="topic" class="chart">
-        <SensorChart :topic="topic" class="SensorChart"/>
+      <div v-for='(topic) in sensorData?.sensorData?.keys()' :key='topic' class='chart'>
+        <SensorChart :topic='topic' class='SensorChart'/>
       </div>
-
     </div>
     <div class='button-container'>
       <DeviceButton command='on' :target="'/api/mqtt/device/' + props.name" />
