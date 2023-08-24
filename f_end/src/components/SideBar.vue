@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth';
-import { computed, onMounted, reactive, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import router from '@/router';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
@@ -25,30 +25,17 @@ const { token, isAuthed, logout } = useAuthStore();
 let data = reactive([] as Array<string>);
 const route = useRoute();
 
-/*
-onMounted(async () => {
+watch(route, async () => {
+// 페이지가 이동될 때마다 실행되는 로직
   await axios.get('/api/mqtt/device', {
     headers: {
       Authorization: `Bearer ${token}`,
     }
-  }).then(response => {
+  }).then(async response => {
     data.length = 0;
-    response.data.forEach((value) => data.push(value));
-    if (isAuthed()) data.push('register', 'info', 'logout');
-  }).catch(e => data.length = 0);
-});
-*/
-watch(route, async (from, to) => {
-  // 페이지가 이동될 때마다 실행되는 로직
-    await axios.get('/api/mqtt/device', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    }).then(async response => {
-      data.length = 0;
-      response.data.forEach((value) => data.push(value));
-      data.push('register', 'info', 'logout');
-    }).catch(e => router.push('/'));
+    response.data.forEach((value: any) => data.push(value));
+    data.push('register', 'info', 'logout');
+  }).catch(() => router.push('/'));
 }, { deep: true });
 
 const navbar = computed(() => {
@@ -58,11 +45,11 @@ const navbar = computed(() => {
 const navigate = (item: string) => {
   if (item === 'logout') {
     logout();
-    router.push('/');
+    router.replace('/');
   }
-  else if (item === 'info') router.push('/info');
-  else if (item === 'register') router.push('/register');
-  else router.push(`/device/${item}`);
+  else if (item === 'info') router.replace('/info');
+  else if (item === 'register') router.replace('/register');
+  else router.replace(`/device/${item}`);
 }
 </script>
 
@@ -74,12 +61,12 @@ const navigate = (item: string) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   height: 100vh;
 }
 .nav-item {
-  margin: 0px;
+  margin: 0;
   padding: 10px;
   width: 100%;
   font-weight: bold;
