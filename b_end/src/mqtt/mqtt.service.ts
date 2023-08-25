@@ -33,24 +33,22 @@ export class MqttService implements OnModuleInit {
         //  새로 연결 시, 등록되어있는 모든 기기 구독
         const devices = await this.deviceAll();
         devices.forEach((item) => {
-          this.client
-            .subscribe(`${item.name}/#`, (err) => {
-              if (err) console.error(err);
-            })
-            .on('message', (topic, msg) => {
-              //  Ignore messages if what is being sent to Device
-              if (topic.split('/').pop() === 'input') return;
-
-              //  TODO: create DTO
-              this.mqttGateway.publish(item.name, {
-                topic: topic,
-                value: Number(msg.toString()),
-              });
-            });
+          this.client.subscribe(`${item.name}/#`, (err) => {
+            if (err) {
+              console.error('Failed to subscribe to topic:', err);
+            }
+          });
         });
       } catch (e) {
         console.error(e);
       }
+    });
+    this.client.on('message', (topic, msg) => {
+      if (topic.split('/').pop() === 'input') return;
+      this.mqttGateway.publish(topic.split('/')[0], {
+        topic: topic,
+        value: Number(msg.toString()),
+      });
     });
   }
   remoteDevice(topic: string, msg: string) {
@@ -58,10 +56,6 @@ export class MqttService implements OnModuleInit {
     this.client.publish(topic, msg, { qos: 1, retain: true }, (e) => {
       if (e) throw new HttpException('Mqtt Error', HttpStatus.BAD_GATEWAY);
     });
-  }
-
-  pubWS(device: string, data) {
-    this.mqttGateway.publish(device, data);
   }
 
   async deviceAll() {
@@ -116,19 +110,11 @@ export class MqttService implements OnModuleInit {
       return HttpStatus.NOT_FOUND;
     }
 
-    this.client
-      .subscribe(`${deviceName}/#`, (err) => {
-        if (err) {
-          console.error('Failed to subscribe to topic:', err);
-        }
-      })
-      .on('message', (topic, msg) => {
-        if (topic.split('/').pop() === 'input') return;
-        this.mqttGateway.publish(deviceName, {
-          topic: topic,
-          value: Number(msg.toString()),
-        });
-      });
+    this.client.subscribe(`${deviceName}/#`, (err) => {
+      if (err) {
+        console.error('Failed to subscribe to topic:', err);
+      }
+    });
 
     return HttpStatus.CREATED;
   }
