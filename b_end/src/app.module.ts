@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as process from 'process';
 import { PrismaService } from './prisma.service';
+import { BugModule } from './bug/bug.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PrismaService } from './prisma.service';
           configService.get('MONGO_PORT'),
       }),
     }),
+    BugModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
