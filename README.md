@@ -112,6 +112,9 @@ MQTT_HOST=mosquitto
 MQTT_PORT=1883
 
 UPLOAD_DEST=uploads/chat
+
+GH_REPO_URI=깃허브 레포지토리 URI
+GH_PERSONAL_KEY=깃허브 Personal Token
 ```
 
 ### 실행
