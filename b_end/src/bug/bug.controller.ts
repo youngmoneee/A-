@@ -52,10 +52,14 @@ export class BugController {
     @Body('title') title: string,
     @Body('body') body: string,
   ) {
-    const res = await this.bugService.reportBug(user.userName, title, body);
-    if (res.status === 200) return HttpStatus.CREATED;
-    console.error(res.status, ' : ', res.statusText);
-    if (res.status % 100 === 4) return HttpStatus.BAD_REQUEST;
-    else return HttpStatus.BAD_GATEWAY;
+    try {
+      await this.bugService.reportBug(user.userName, title, body);
+      return HttpStatus.CREATED;
+    } catch (e) {
+      console.error(e);
+      console.error(e.status, ' : ', e.statusText);
+      if (e.status / 100 === 4) return HttpStatus.BAD_REQUEST;
+      else return HttpStatus.BAD_GATEWAY;
+    }
   }
 }
