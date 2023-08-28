@@ -1,16 +1,16 @@
 <template>
   <div class='index'>
-  Index
+    <ReportBug />
   </div>
 </template>
 
 <script setup lang='ts'>
+import ReportBug from '@/views/ReportBug.vue';
 </script>
 
 <style scoped>
 .index {
   display: flex;
   height: 100%;
-  background-color: aqua;
 }
 </style>

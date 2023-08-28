@@ -70,9 +70,6 @@ const navigate = (item: string) => {
   padding: 10px;
   width: 100%;
   font-weight: bold;
-  /**
-   * flex-basis를 통해 기본 크기를 0으로 설정, flex-grow=1 옵션을 통해 나머지 공간을 균등하게 분배 -->
-   */
   flex-basis: 0;
   flex-grow: 1;
   display: flex;
@@ -85,6 +82,8 @@ const navigate = (item: string) => {
   -webkit-backdrop-filter: blur(3px);
 }
 .nav-content {
+  width: 100%;
   margin: 0;
+  word-break: break-word;
 }
 </style>
