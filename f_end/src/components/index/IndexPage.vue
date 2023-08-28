@@ -11,6 +11,8 @@ import ReportBug from '@/views/ReportBug.vue';
 <style scoped>
 .index {
   display: flex;
+  justify-content: center;
   height: 100%;
+  width: 100%;
 }
 </style>
