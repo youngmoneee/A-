@@ -1,0 +1,30 @@
+<template>
+  <div>
+    로그인 진행 중 ...
+  </div>
+</template>
+
+<script setup lang='ts'>
+import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import router from '@/router';
+import axios from 'axios';
+
+const route = useRoute();
+onMounted(async () => {
+  const code = route.query.code;
+  if (!code) await router.push('/');
+
+  await axios.post('/auth/google', {
+    code: code
+  }).then(response => {
+    console.log(response.data.token);
+  }).catch(e => {
+    console.error(e);
+  })
+})
+</script>
+
+<style scoped>
+
+</style>
