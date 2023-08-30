@@ -9,8 +9,10 @@ import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import axios from 'axios';
+import { useAuthStore } from '@/store/auth';
 
 const route = useRoute();
+const { setToken } = useAuthStore();
 onMounted(async () => {
   const code = route.query.code;
   if (!code) await router.push('/');
@@ -18,7 +20,7 @@ onMounted(async () => {
   await axios.post('/auth/kakao', {
     code: code
   }).then(response => {
-    console.log(response.data.token);
+    setToken(response.data.token);
   }).catch(e => {
     console.error(e);
   })
