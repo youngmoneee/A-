@@ -3,6 +3,8 @@ import IndexPage from '@/components/index/IndexPage.vue';
 import UserInfo from '@/components/UserInfo.vue';
 import DeviceController from '@/components/DeviceController.vue';
 import RegisterDevice from '@/views/RegisterDevice.vue';
+import KakaoCallback from '@/components/callback/KakaoCallback.vue';
+import GoogleCallback from '@/components/callback/GoogleCallback.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,6 +28,15 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Info',
     component: UserInfo,
   },
+  {
+    path: '/callback/kakao',
+    name: 'KakaoCallback',
+    component: KakaoCallback,
+  }, {
+    path: '/callback/google',
+    name: 'GoogleCallback',
+    component: GoogleCallback,
+  }
 ];
 
 const router = createRouter({

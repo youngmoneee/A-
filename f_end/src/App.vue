@@ -10,14 +10,6 @@
 import SideNav from '@/components/SideBar.vue';
 import LoginModal from '@/components/login/LoginModal.vue';
 import MainContainer from '@/components/MainContainer.vue';
-import { useAuthStore } from '@/store/auth';
-import { onBeforeMount } from 'vue';
-
-const { check } = useAuthStore();
-
-onBeforeMount(async () => {
-  await check();
-})
 </script>
 <style>
 #app {
