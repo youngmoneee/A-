@@ -16,22 +16,22 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/store/auth';
-import { computed, reactive, watch } from 'vue';
+import { computed, inject, reactive, watch } from 'vue';
 import router from '@/router';
-import axios from 'axios';
 import { useRoute } from 'vue-router';
+import { AxiosInstance } from 'axios';
+import { storeToRefs } from 'pinia';
 
-const { token, isAuthed, logout } = useAuthStore();
+const { logout } = useAuthStore();
+const { isAuthed } = storeToRefs(useAuthStore());
 let data = reactive([] as Array<string>);
 const route = useRoute();
+const $axios = inject('$axios') as AxiosInstance;
 
 watch(route, async () => {
 // 페이지가 이동될 때마다 실행되는 로직
-  await axios.get('/api/mqtt/device', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  }).then(async response => {
+  if (!isAuthed.value) return ;
+  await $axios.get('/api/mqtt/device').then(response => {
     data.length = 0;
     response.data.forEach((value: any) => data.push(value));
     data.push('register', 'info', 'logout');
@@ -39,7 +39,7 @@ watch(route, async () => {
 }, { deep: true });
 
 const navbar = computed(() => {
-  if (!isAuthed) return [];
+  if (!isAuthed.value) return [];
   return data;
 });
 const navigate = (item: string) => {
@@ -55,7 +55,7 @@ const navigate = (item: string) => {
 
 <style scoped>
 .nav-bar {
-  background-image: url('/src/assets/iphone.png');
+  background-image: url('@/assets/iphone.png');
   background-size: cover;
   display: flex;
   flex-direction: column;

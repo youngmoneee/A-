@@ -12,7 +12,7 @@ import DisplayDiv from '@/components/DisplayDiv.vue';
 
 <style scoped>
 .main-container {
-  background-image: url('/src/assets/bg.png');
+  background-image: url('@/assets/bg.png');
   object-fit: contain;
   display: flex;
   flex-direction: column;

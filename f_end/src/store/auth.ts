@@ -3,16 +3,12 @@ import { computed, ref } from 'vue';
 
 export const useAuthStore = defineStore('auth', () => {
   const tok = ref('');
-  const token = computed(() => {
-    return tok.value;
-  });
-  function setToken(token: string) {
-    tok.value = token;
+  function setToken(jwt: string, $axios: any) {
+    tok.value = jwt;
+    $axios.defaults.headers.common['Authorization'] = `Bearer ${tok.value}`;
   }
-
-  const isAuthed = computed(() => {
-    return tok.value !== '';
-  });
+  const token = computed(() => tok.value);
+  const isAuthed = computed(() => tok.value !== '');
   function logout(): void {
     tok.value = '';
   }

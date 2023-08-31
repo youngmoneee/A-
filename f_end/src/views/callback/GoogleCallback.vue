@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang='ts'>
-import { onMounted } from 'vue';
+import { inject, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import axios from 'axios';
@@ -13,20 +13,16 @@ import { useAuthStore } from '@/store/auth';
 
 const route = useRoute();
 const { setToken } = useAuthStore();
+const $axios = inject('$axios');
 onMounted(async () => {
   const code = route.query.code;
   if (!code) await router.push('/');
 
-  await axios.post('/auth/kakao', {
+  await axios.post('/auth/google', {
     code: code
   }).then(response => {
-    setToken(response.data.token);
-  }).catch(e => {
-    console.error(e);
-  })
+    setToken(response.data, $axios);
+  }).catch(e => console.error('error : ', e));
+  await router.push('/');
 })
 </script>
-
-<style scoped>
-
-</style>

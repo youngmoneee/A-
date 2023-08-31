@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import IndexPage from '@/components/index/IndexPage.vue';
-import UserInfo from '@/components/UserInfo.vue';
-import DeviceController from '@/components/DeviceController.vue';
+import IndexPage from '@/views/IndexPage.vue';
+import UserInfo from '@/views/UserInfo.vue';
+import DeviceController from '@/views/DeviceController.vue';
 import RegisterDevice from '@/views/RegisterDevice.vue';
-import KakaoCallback from '@/components/callback/KakaoCallback.vue';
-import GoogleCallback from '@/components/callback/GoogleCallback.vue';
+import KakaoCallback from '@/views/callback/KakaoCallback.vue';
+import GoogleCallback from '@/views/callback/GoogleCallback.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {

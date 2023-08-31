@@ -12,8 +12,9 @@
 import KakaoButton from '@/components/login/KakaoButton.vue';
 import GoogleButton from '@/components/login/GoogleButton.vue';
 import { useAuthStore } from '@/store/auth';
+import { storeToRefs } from 'pinia';
 
-const { isAuthed } = useAuthStore();
+const { isAuthed } = storeToRefs(useAuthStore());
 </script>
 
 <style scoped>

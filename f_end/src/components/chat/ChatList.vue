@@ -1,23 +1,22 @@
 <template>
   <div class='chat-list'>
-    <ChatItem v-for="item of chat.getChatData()" :key='item' :item="item" />
+    <ChatItem v-for="item of chatData" :key='item' :item="item" />
   </div>
 </template>
 
 <script setup lang='ts'>
 import { useChatStore } from '@/store/chat';
-import { IChat } from '@/interface/chat';
 import { onMounted } from 'vue';
 import ChatItem from '@/components/chat/ChatItem.vue';
 import { useSocketStore } from '@/store/socket';
+import { storeToRefs } from 'pinia';
 
-const chat = useChatStore();
-const { socket } = useSocketStore();
+const { addList } = useChatStore();
+const { chatData } = storeToRefs(useChatStore());
+const { onEvent } = useSocketStore();
 
 onMounted(() => {
-  socket.on('chat', (data: IChat) => {
-      chat.addList(data);
-    });
+  onEvent('chat', addList);
 });
 
 </script>
