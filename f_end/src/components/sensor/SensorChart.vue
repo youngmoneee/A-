@@ -6,9 +6,11 @@
 import { defineProps, ref, onMounted, onUnmounted, watch } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import { useSensorData } from '@/store/sensor';
+import { storeToRefs } from 'pinia';
 
 Chart.register(...registerables);
-const sensorData = useSensorData();
+const { sensorData } = storeToRefs(useSensorData());
+const { getLabel } = useSensorData();
 const props = defineProps({
   topic: {
     type: String,
@@ -33,12 +35,12 @@ onMounted(() => {
   chartInstance = new Chart(context, {
     type: 'line',
     data: {
-      labels: sensorData.getLabel(props.topic) || [],
+      labels: getLabel(props.topic) || [],
       datasets: [
         {
           label: props.topic?.split('/').slice(1).join('/'),
           backgroundColor: '#f87979',
-          data: sensorData.sensorData?.get(props.topic) || [],
+          data: sensorData.value.get(props.topic) || [],
           fill: false,
           tension: 0.1,
         }
@@ -55,9 +57,9 @@ onUnmounted(() => {
   //  TODO : REMOVE
   window.removeEventListener('resize', resizeChart);
 });
-watch(() => sensorData.getAllData().get(props.topic) as number[], (newData : number[]) => {
+watch(() => sensorData.value.get(props.topic) as number[], (newData : number[]) => {
   if (chartInstance) {
-    chartInstance.data.labels = sensorData.getLabel(props.topic);
+    chartInstance.data.labels = getLabel(props.topic);
     chartInstance.data.datasets[0].data = newData;
     chartInstance.update();
   }
