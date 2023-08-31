@@ -10,7 +10,7 @@ async function bootstrap() {
   const apiConfig = new DocumentBuilder()
     .setTitle('A-')
     .setDescription('Api Documentaion')
-    .setVersion('1.0')
+    .setVersion('Beta V0.2')
     .setContact('youngmon', 'https://youngmon.app', 'zsh@duck.com')
     .addBearerAuth(
       { type: 'http', in: 'header', scheme: 'bearer', bearerFormat: 'JWT' },

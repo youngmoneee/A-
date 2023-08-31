@@ -54,6 +54,17 @@ export class AuthController {
     description:
       '인증 서버로부터 Access Token을 받기위한 Access Code를 받아, Jwt 응답',
   })
+  @ApiBody({
+    description: 'Oauth 인증에 필요한 AccessCode를 바디를 통해 전달',
+    schema: {
+      properties: {
+        code: { type: 'string' },
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: '인증 성공 시, 토큰을 바디에 담아 응답',
+  })
   @ApiUnauthorizedResponse({
     description: '인증 실패 시 401 반환',
   })
@@ -76,6 +87,9 @@ export class AuthController {
   })
   @ApiUnauthorizedResponse({
     description: '인증 실패 시 401 반환',
+  })
+  @ApiOkResponse({
+    description: '인증 성공 시, 토큰을 바디에 담아 응답',
   })
   @ApiBody({
     description: 'Oauth 인증에 필요한 AccessCode를 바디를 통해 전달',
