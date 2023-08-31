@@ -39,12 +39,15 @@ _로그인은 Kakao, Google을 통해 진행 가능합니다._
 실제 디바이스와 연결되는 만큼, 직접 기기에 대한 제어는 불가능합니다.
 > 구성 시 부품 비용 7000원 정도 소요되며, 디바이스 세팅을 위한 외부 레포지토리는 다음과 같습니다.  
 > [IR Controller with Esp8266](https://github.com/youngmoneee/esp8266-dht11)
+>
+> 버그 발견 시, 페이지를 통해 버그를 제보하면 해당 깃 레포지토리에 이슈로 등록됩니다.
+> 서비스 제작에 기여해주세요 ⭐️
 
 ---
 ## [📖 REST API DOCS](https://iot.youngmon.app/api)
 
 외부에서 API를 사용하기 위한 REST API에 대한 문서입니다.  
-인증은 Bearer Token을 사용하고 있으며, 로그인 후 브라우저의 쿠키를 통해 토큰을 얻을 수 있습니다.  
+인증은 Bearer Token을 사용하고 있으며, 로그인 후 서버로부터의 응답을 통해 토큰을 얻을 수 있습니다.  
 
 ---
 ## 시작 가이드
@@ -81,8 +84,26 @@ POSTGRES_PASSWORD=DB 유저 패스워드
 POSTGRES_DB=데이터베이스명
 
 
-# Frontend
-VUE_APP_TOKEN_NAME=accessToken
+# Auth
+G_AUTH_URI=https://accounts.google.com/o/oauth2/v2/auth
+G_CLIENT_ID=생성된 구글 Client ID
+G_SECRET=생성된 구글 Secret
+G_CALLBACK=등록한 Redirect URI for Google API
+
+K_AUTH_URI=https://kauth.kakao.com/oauth/authorize
+K_CLIENT_ID=생성된 카카오 Client ID
+K_SECRET=생성된 카카오 Secret
+K_CALLBACK=등록한 Redirect URI for Kakao API
+
+VUE_APP_G_AUTH_URI=$G_AUTH_URI
+VUE_APP_K_AUTH_URI=$K_AUTH_URI
+
+VUE_APP_G_CLIENT_ID=$G_CLIENT_ID
+VUE_APP_K_CLIENT_ID=$K_CLIENT_ID
+
+VUE_APP_G_CALLBACK=$G_CALLBACK
+VUE_APP_K_CALLBACK=$K_CALLBACK
+
 
 # Backend
 DATABASE_URL="postgresql://DB_USERNAME:DB_PASSWORD@DB_HOST:DB_PORT/DB_DATABASE"
@@ -96,14 +117,6 @@ DB_DATABASE=
 JWT_SECRET=JWT 해싱에 필요한 임의의 값 입력
 JWT_EXPIRES_IN=토큰 만료 기간
 JWT_TOKEN=accessToken
-
-G_CLIENT_ID=생성된 구글 Client ID
-G_SECRET=생성된 구글 Secret
-G_CALLBACK=등록한 Redirect URI for Google API 
-
-K_CLIENT_ID=생성된 카카오 Client ID
-K_SECRET=생성된 카카오 Secret
-K_CALLBACK=등록한 Redirect URI for Kakao API
 
 MONGO_HOST=mongo
 MONGO_PORT=27017
