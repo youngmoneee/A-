@@ -1,40 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User, Prisma } from '@prisma/client';
-import { OauthProvider } from '../dto/enum.provider';
 import { UserDetailDto } from '../dto/userDetail.dto';
-import { UserDto } from '../dto/user.dto';
 import { ROLE } from '../dto/enum.role';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
-
-  async createUser(data: Prisma.UserCreateInput): Promise<UserDto> {
-    const user: User = await this.prisma.user.create({
-      data,
-    });
-    return {
-      id: user.id,
-      userRole: user.userRole,
-      userName: user.userName,
-    } as UserDto;
-  }
-
-  async getUserByCB(
-    userId: string,
-    provider: OauthProvider,
-  ): Promise<UserDto | null> {
-    const user: User = await this.prisma.user.findFirst({
-      where: { userId, provider },
-    });
-    if (!user) return null;
-    return {
-      id: user.id,
-      userRole: user.userRole,
-      userName: user.userName,
-    } as UserDto;
-  }
 
   async getUserDetailById(id: number): Promise<UserDetailDto> {
     try {
