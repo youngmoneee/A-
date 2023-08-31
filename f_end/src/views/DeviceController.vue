@@ -2,7 +2,7 @@
   <div class='device-controller'>
     <div class='title'>{{ props.name }}</div>
     <div class='chart-container'>
-      <div v-for='(topic) in sensorData?.sensorData?.keys()' :key='topic' class='chart'>
+      <div v-for='(topic) in sensorData.keys()' :key='topic' class='chart'>
         <SensorChart :topic='topic' class='SensorChart'/>
       </div>
     </div>
@@ -19,7 +19,7 @@ import SensorChart from '@/components/sensor/SensorChart.vue';
 import { useSensorData } from '@/store/sensor';
 import DeviceButton from '@/components/sensor/DeviceButton.vue';
 
-const sensorData = useSensorData();
+const { sensorData, deviceSubscribe, deviceUnSubscribe } = useSensorData();
 const props = defineProps({
   name: {
     type: String,
@@ -29,13 +29,13 @@ const props = defineProps({
 watch(
   () => props.name,
   (newName, oldName) => {
-    if (oldName) sensorData.deviceUnSubscribe(oldName);
-    if (newName) sensorData.deviceSubscribe(newName);
+    if (oldName) deviceUnSubscribe(oldName);
+    if (newName) deviceSubscribe(newName);
   },
   { immediate: true },
 );
 onUnmounted(() => {
-  sensorData.deviceUnSubscribe(props.name);
+  deviceUnSubscribe(props.name);
 })
 
 </script>
