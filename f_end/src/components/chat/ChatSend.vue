@@ -12,11 +12,9 @@
   </div>
 </template>
 <script setup>
-import { useAuthStore } from '@/store/auth';
-import axios from 'axios';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 
-const {token} = useAuthStore();
+const $axios = inject('$axios');
 let text = ref('');
 let fileRef = ref(null);
 
@@ -31,9 +29,8 @@ const submit = async () => {
   if (fileRef.value) form.append('file', fileRef.value);
   text.value = '';
   fileRef.value = null;
-  await axios.post('/api/chat', form, {
+  await $axios.post('/api/chat', form, {
     headers: {
-      Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
   }).then(() => {
