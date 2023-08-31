@@ -24,7 +24,8 @@ export class ChatGateway implements OnGatewayConnection {
     private readonly configService: ConfigService,
   ) {}
   handleConnection(client: Socket) {
-    const token = client.handshake.query?.token as string;
+    const token = client.handshake.auth?.token as string;
+    console.log(token);
     try {
       jwt.verify(token, this.configService.get<string>('JWT_SECRET'));
     } catch (e) {
