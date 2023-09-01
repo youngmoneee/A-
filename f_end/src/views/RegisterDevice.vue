@@ -7,20 +7,18 @@
 </template>
 
 <script setup lang='ts'>
-import { ref } from 'vue';
-import axios from 'axios';
-import { useAuthStore } from '@/store/auth';
+import { inject, ref } from 'vue';
 import router from '@/router';
+import { AxiosInstance } from 'axios';
 
 const deviceName = ref('');
-const { token } = useAuthStore();
+const axios = inject('$axios') as AxiosInstance;
 
 const sendDeviceName = async () => {
-  await axios.post('/api/mqtt/device', { device: deviceName.value }, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).then(() => router.push('/info')).catch(e => console.error(e));
+  if (deviceName.value.trim() === ' ') return;
+  await axios.post('/api/mqtt/device', { device: deviceName.value.trim() })
+    .then(() => router.push('/info'))
+    .catch(e => console.error(e));
 }
 </script>
 
