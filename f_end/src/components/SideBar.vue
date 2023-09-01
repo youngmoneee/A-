@@ -36,7 +36,7 @@ watch(route, async () => {
     response.data.forEach((value: any) => data.push(value));
     data.push('register', 'info', 'logout');
   }).catch(() => router.push('/'));
-}, { deep: true });
+}, { immediate: true });
 
 const navbar = computed(() => {
   if (!isAuthed.value) return [];
@@ -55,35 +55,35 @@ const navigate = (item: string) => {
 
 <style scoped>
 .nav-bar {
-  background-image: url('@/assets/iphone.png');
-  background-size: cover;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  top: 0;
-  left: 0;
-  height: 100vh;
+  background: rgba(255, 255, 255, 0.1);
+  gap: 1px;
 }
 .nav-item {
   margin: 0;
-  padding: 10px;
+  padding: 5px;
   width: 100%;
+  height: 100%;
   font-weight: bold;
   flex-basis: 0;
   flex-grow: 1;
-  display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.00);
   box-shadow: 4px 4px 60px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
 }
 .nav-content {
-  width: 100%;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   margin: 0;
   word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
