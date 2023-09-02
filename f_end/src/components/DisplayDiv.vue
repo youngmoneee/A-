@@ -9,7 +9,6 @@
 
 <style scoped>
 .RouterView {
-  display: flex;
-  height: 100%;
+  overflow-y: auto;
 }
 </style>
