@@ -1,14 +1,16 @@
 <template>
   <div class='chat-send'>
     <textarea v-model="text" placeholder="Enter text" @keyup.enter.prevent='keySubmit' @keydown.shift.enter.prevent='addNewLine' />
-    <label class="file-input-label">
-      <input type="file" style="display: none" @change="onFileChange" />
-      파일 선택
-    </label>
-    <label class="submit-label">
-      <button style='display: none' @click="submit" />
-      전송
-    </label>
+    <div class='button-container'>
+      <label class="file-input-label">
+        <input type="file" style="display: none" @change="onFileChange" />
+        파일
+      </label>
+      <label class="submit-label">
+        <button style='display: none' @click="submit" />
+        전송
+      </label>
+    </div>
   </div>
 </template>
 <script setup>
@@ -52,7 +54,7 @@ const addNewLine = () => {
 <style scoped>
 .chat-send {
   width: 100%;
-  display: flex;
+  height: 50px;
   align-items: stretch;
 }
 textarea {
@@ -63,19 +65,40 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
+  background: rgba(255, 255, 255, 0.3);
 }
-
+.button-container {
+  display: flex;
+  width: 100px;
+}
 .file-input-label, .submit-label {
-  flex-basis: 10%;
-  flex-grow: 0;
-  flex-grow: 0;
+  flex-grow: 1;
+  flex-basis: 0;
   margin-left: 1px;
   padding: 16px 8px;
   border: none;
   cursor: pointer;
   border-radius: 4px;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.file-input-label {
+  background-color: #0046ff;
+}
+.file-input-label:hover {
+  background-color: #0020ec;
+}
+
+.submit-label {
+  background-color: #4caf50;
+}
+.submit-label:hover {
+  background-color: #45a049;
+}
+
 
 .file-input-label {
   background-color: #0046ff;

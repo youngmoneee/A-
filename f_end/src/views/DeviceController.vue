@@ -3,7 +3,7 @@
     <div class='title'>{{ props.name }}</div>
     <div class='chart-container'>
       <div v-for='(topic) in sensorData.keys()' :key='topic' class='chart'>
-        <SensorChart :topic='topic' class='SensorChart'/>
+        <SensorChart :topic='topic'/>
       </div>
     </div>
     <div class='button-container'>
@@ -42,29 +42,27 @@ onUnmounted(() => {
 
 <style scoped>
 .device-controller {
-  position: relative;
   display: flex;
   height: 100%;
   width: 100%;
+  flex-direction: column;
 }
 .title {
   font-weight: bold;
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  text-align: left;
+  margin: 5px 10px;
 }
 .chart-container {
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  height: 100%;
   overflow-y: auto;
   align-items: center;
   justify-content: center;
 }
 .button-container {
-  position: absolute;
-  right: 20px;
-  bottom: 0;
+  text-align: right;
+  margin: 5px 10px;
 }
 .chart {
   display: flex;
@@ -73,10 +71,6 @@ onUnmounted(() => {
   overflow-y: auto;
   align-items: center;
   justify-content: center;
-}
-.SensorChart {
-  display: flex;
-  box-sizing: border-box;
-  margin: 0;
+  flex-grow: 1;
 }
 </style>

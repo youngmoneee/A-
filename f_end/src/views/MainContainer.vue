@@ -12,24 +12,24 @@ import DisplayDiv from '@/components/DisplayDiv.vue';
 
 <style scoped>
 .main-container {
-  background-image: url('@/assets/bg.png');
-  object-fit: contain;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   height: 100%;
 }
 .DisplayDiv {
-  flex: 6 1 0;
+  display: flex;
   justify-content: center;
   padding: 10px;
-  height: 100%;
+  width: 100%;
+  height: 60%;
 }
 .ChatDiv {
-  flex: 4 1 0;
   display: flex;
+  width: 100%;
+  height: 40%;
   flex-direction: column;
   align-items: stretch;
-  height: 100%;
   border-top: 1px solid gray;
 }
 </style>

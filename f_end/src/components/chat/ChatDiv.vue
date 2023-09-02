@@ -1,7 +1,7 @@
 <template>
   <div>
-    <ChatList />
-    <ChatSend />
+    <ChatList class='chat-list'/>
+    <ChatSend class ='chat-send'/>
   </div>
 </template>
 <script setup>
@@ -10,4 +10,10 @@ import ChatSend from '@/components/chat/ChatSend.vue';
 </script>
 
 <style scoped>
+.chat-list {
+  display: flex;
+}
+.chat-send {
+  display: flex;
+}
 </style>
