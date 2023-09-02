@@ -74,6 +74,7 @@ const navigate = (item: string) => {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.00);
   box-shadow: 4px 4px 60px 0 rgba(31, 38, 135, 0.37);
+  overflow-y: auto;
 }
 .nav-content {
   display: flex;
@@ -82,8 +83,5 @@ const navigate = (item: string) => {
   align-items: center;
   margin: 0;
   word-break: break-word;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 </style>
