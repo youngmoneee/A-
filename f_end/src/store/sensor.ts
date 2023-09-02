@@ -5,7 +5,6 @@ import { ref } from 'vue';
 export const useSensorData = defineStore('sensor', () => {
   const sensorData = ref<Map<string, Array<number>>>(new Map());
   const dataLength = 20;
-
   function updateTopic(topic: string, data: number) {
     const newData: Array<number> = sensorData.value.get(topic)?.slice() || [];
     if (newData.length >= dataLength) newData.shift();

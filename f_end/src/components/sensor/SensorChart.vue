@@ -16,22 +16,13 @@ const props = defineProps({
     type: String,
     required: true,
   }
-})
+});
 
-const chart = ref(null);
-let chartInstance: any = null;
-
-//  TODO : REMOVE
-const resizeChart = () => {
-  if (chartInstance) {
-    chartInstance.resize();
-    chartInstance.update('none');
-  }
-};
-
+const chart = ref<HTMLCanvasElement | null>(null);
+let chartInstance: Chart | null = null;
 
 onMounted(() => {
-  const context = chart.value?.getContext('2d');
+  const context = chart.value?.getContext('2d') as CanvasRenderingContext2D;
   chartInstance = new Chart(context, {
     type: 'line',
     data: {
@@ -46,18 +37,16 @@ onMounted(() => {
         }
       ]
     },
+    options: {
+      maintainAspectRatio: false,
+    }
   });
-  //  TODO : REMOVE
-  window.addEventListener('resize', resizeChart);
 });
 onUnmounted(() => {
-  if (chartInstance) {
-    chartInstance.destroy();
-  }
-  //  TODO : REMOVE
-  window.removeEventListener('resize', resizeChart);
+  chartInstance?.destroy();
 });
-watch(() => sensorData.value.get(props.topic) as number[], (newData : number[]) => {
+watch(() => sensorData.value?.get(props.topic) as Array<number>,
+  (newData : Array<number>) => {
   if (chartInstance) {
     chartInstance.data.labels = getLabel(props.topic);
     chartInstance.data.datasets[0].data = newData;
@@ -67,9 +56,5 @@ watch(() => sensorData.value.get(props.topic) as number[], (newData : number[]) 
 
 </script>
 <style scoped>
-canvas {
-  display: flex;
-  width: 100%;
-  height: 50%;
-}
+
 </style>
