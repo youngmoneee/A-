@@ -106,8 +106,7 @@ export class MqttService implements OnModuleInit {
         },
       });
     } catch (e) {
-      console.error(e);
-      return HttpStatus.NOT_FOUND;
+      throw new HttpException('Exist Relation', HttpStatus.CONFLICT);
     }
 
     this.client.subscribe(`${deviceName}/#`, (err) => {

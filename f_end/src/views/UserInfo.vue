@@ -31,28 +31,26 @@
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref } from 'vue';
-import axios from 'axios';
+import { inject, onMounted, ref } from 'vue';
 import { useAuthStore } from '@/store/auth';
 import router from '@/router';
+import { storeToRefs } from 'pinia';
+import { AxiosInstance } from 'axios';
+import { IUser } from '@/interface/IUser';
 
-const { token, isAuthed } = useAuthStore();
-const data = ref({});
+const { isAuthed } = storeToRefs(useAuthStore());
+const data = ref<IUser>({} as IUser);
+const $axios = inject('$axios') as AxiosInstance;
 
 onMounted(async () => {
-  if (!isAuthed) await router.push('/');
-  await axios.get('/api/user', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  }).then(response => data.value = response.data);
+  if (!isAuthed.value) await router.push('/');
+  await $axios.get('/api/user').then(response => data.value = response.data);
 });
-const remove = async (device) => {
-  await axios.delete(`api/mqtt/device/${device}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  }).then(()=> router.go(0))
+const remove = async (device: string) => {
+  await $axios.delete(`api/mqtt/device/${device}`).then(() => {
+    data.value.devices = data.value.devices.filter((i: any) => i !== device)
+    router.push({ path: 'info', query: { reload: Date.now() }});
+  });
 };
 </script>
 

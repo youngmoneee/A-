@@ -2,8 +2,8 @@
   <div class='device-controller'>
     <div class='title'>{{ props.name }}</div>
     <div class='chart-container'>
-      <div v-for='(topic) in sensorData?.sensorData?.keys()' :key='topic' class='chart'>
-        <SensorChart :topic='topic' class='SensorChart'/>
+      <div v-for='(topic) in sensorData.keys()' :key='topic' class='chart'>
+        <SensorChart :topic='topic'/>
       </div>
     </div>
     <div class='button-container'>
@@ -19,7 +19,7 @@ import SensorChart from '@/components/sensor/SensorChart.vue';
 import { useSensorData } from '@/store/sensor';
 import DeviceButton from '@/components/sensor/DeviceButton.vue';
 
-const sensorData = useSensorData();
+const { sensorData, deviceSubscribe, deviceUnSubscribe } = useSensorData();
 const props = defineProps({
   name: {
     type: String,
@@ -29,42 +29,40 @@ const props = defineProps({
 watch(
   () => props.name,
   (newName, oldName) => {
-    if (oldName) sensorData.deviceUnSubscribe(oldName);
-    if (newName) sensorData.deviceSubscribe(newName);
+    if (oldName) deviceUnSubscribe(oldName);
+    if (newName) deviceSubscribe(newName);
   },
   { immediate: true },
 );
 onUnmounted(() => {
-  sensorData.deviceUnSubscribe(props.name);
+  deviceUnSubscribe(props.name);
 })
 
 </script>
 
 <style scoped>
 .device-controller {
-  position: relative;
   display: flex;
   height: 100%;
   width: 100%;
+  flex-direction: column;
 }
 .title {
   font-weight: bold;
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  text-align: left;
+  margin: 5px 10px;
 }
 .chart-container {
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  height: 100%;
   overflow-y: auto;
   align-items: center;
   justify-content: center;
 }
 .button-container {
-  position: absolute;
-  right: 20px;
-  bottom: 0;
+  text-align: right;
+  margin: 5px 10px;
 }
 .chart {
   display: flex;
@@ -73,10 +71,6 @@ onUnmounted(() => {
   overflow-y: auto;
   align-items: center;
   justify-content: center;
-}
-.SensorChart {
-  display: flex;
-  box-sizing: border-box;
-  margin: 0;
+  flex-grow: 1;
 }
 </style>

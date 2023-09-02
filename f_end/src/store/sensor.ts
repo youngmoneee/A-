@@ -1,41 +1,35 @@
 import { defineStore } from 'pinia';
 import { useSocketStore } from '@/store/socket';
+import { ref } from 'vue';
 
-export const useSensorData = defineStore('sensor', {
-  state: () => ({
-    /**
-     * @key : topic
-     * @value : data
-     */
-    sensorData: new Map() as Map<string, Array<number>>,
-    dataLength: 20,
-  }),
-  actions: {
-    deviceSubscribe(device: string) {
-      const { socket } = useSocketStore();
+export const useSensorData = defineStore('sensor', () => {
+  const sensorData = ref<Map<string, Array<number>>>(new Map());
+  const dataLength = 20;
+  function updateTopic(topic: string, data: number) {
+    const newData: Array<number> = sensorData.value.get(topic)?.slice() || [];
+    if (newData.length >= dataLength) newData.shift();
+    newData.push(data);
 
-      socket.on(device, (obj: any) => this.updateTopic(obj.topic, obj.value));
-    },
-    deviceUnSubscribe(device: string) {
-      const { socket } = useSocketStore();
-
-      socket.off(device);
-      this.sensorData.clear();
-    },
-    updateTopic(topic: string, data: number) {
-      const newData: Array<number> = this.sensorData.get(topic)?.slice() || [];
-      if (newData.length >= this.dataLength) newData.shift();
-      newData.push(data);
-
-      this.sensorData.set(topic, newData);
-    },
-    getAllData() {
-      return this.sensorData;
-    },
-    getLabel(topic: string) {
-      const labels: Array<number> = this.sensorData.get(topic)?.slice() || [];
-
-      return labels.map((_, idx) => (idx - labels.length + 1) * 5 + ' s');
-    },
-  },
+    sensorData.value?.set(topic, newData);
+  }
+  function deviceSubscribe(device: string) {
+    const { onEvent } = useSocketStore();
+    onEvent(device, (obj: any) => updateTopic(obj.topic, obj.value));
+  }
+  function deviceUnSubscribe(device: string) {
+    const { offEvent } = useSocketStore();
+    offEvent(device);
+    sensorData.value.clear();
+  }
+  function getLabel(topic: string) {
+    const labels: Array<number> = sensorData.value.get(topic)?.slice() || [];
+    return labels.map((_, idx) => (idx - labels.length + 1) * 5 + ' s');
+  }
+  return {
+    sensorData,
+    dataLength,
+    deviceSubscribe,
+    deviceUnSubscribe,
+    getLabel,
+  };
 });

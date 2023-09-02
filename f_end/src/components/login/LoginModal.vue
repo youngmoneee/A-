@@ -1,5 +1,5 @@
 <template>
-  <div v-if='!isAuthed' class='bg-black'>
+  <div class='bg-black'>
     <div class="bg-white">
       <h1> L o g i n </h1>
       <KakaoButton class='button'/>
@@ -11,16 +11,13 @@
 <script setup lang='ts'>
 import KakaoButton from '@/components/login/KakaoButton.vue';
 import GoogleButton from '@/components/login/GoogleButton.vue';
-import { useAuthStore } from '@/store/auth';
 
-const { isAuthed } = useAuthStore();
 </script>
 
 <style scoped>
 .bg-black {
   width: 100%; height: 100%;
   background: rgba(0,0,0,0.5);
-  position: fixed;
   padding: 20px;
   display: flex;
   justify-content: center;

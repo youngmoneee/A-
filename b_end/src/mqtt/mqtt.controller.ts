@@ -18,6 +18,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
@@ -71,6 +72,9 @@ export class MqttController {
   @ApiCreatedResponse({ description: '성공적으로 등록 시, Created 상태 반환' })
   @ApiUnauthorizedResponse({
     description: '권한이 없는 요청에 대해 UnAuthentication 반환',
+  })
+  @ApiConflictResponse({
+    description: '이미 존재하는 기기 등록 시 409 상태코드 반환',
   })
   @Post('device')
   async register(@GetUser() user, @Body('device') device) {

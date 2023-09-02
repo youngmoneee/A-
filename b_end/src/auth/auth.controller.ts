@@ -1,15 +1,16 @@
 import {
+  Body,
   Controller,
   Get,
   Logger,
+  Post,
   Res,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiBearerAuth,
-  ApiOAuth2,
+  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -17,16 +18,17 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from './guard/jwt.guard';
 import { GetUser } from '../user/user.decorator';
-import { KakaoGuard } from './guard/kakao.guard';
-import { GoogleGuard } from './guard/google.guard';
 import { UserDto } from '../dto/user.dto';
-import { AuthInterceptor } from './auth.interceptor';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   private logger = new Logger(AuthController.name);
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @ApiBearerAuth('accessToken')
   @ApiOperation({
@@ -49,49 +51,63 @@ export class AuthController {
 
   @ApiOperation({
     summary: '카카오 로그인',
-    description: '카카오 로그인 페이지로 이동',
+    description:
+      '인증 서버로부터 Access Token을 받기위한 Access Code를 받아, Jwt 응답',
+  })
+  @ApiBody({
+    description: 'Oauth 인증에 필요한 AccessCode를 바디를 통해 전달',
+    schema: {
+      properties: {
+        code: { type: 'string' },
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: '인증 성공 시, 토큰을 바디에 담아 응답',
   })
   @ApiUnauthorizedResponse({
     description: '인증 실패 시 401 반환',
   })
-  @Get('kakao')
-  @UseGuards(KakaoGuard)
-  kakaoLogin(@Res() res) {
-    return res.sendStatus(401);
+  @Post('kakao')
+  async kakaoLogin(@Res() res, @Body('code') code) {
+    try {
+      const token = await this.authService.getTokenFromKakao(code);
+      const user = await this.authService.getUserFromKakao(token);
+      res.status(200).send(this.jwtService.sign(user));
+    } catch (e) {
+      this.logger.error(e);
+      res.sendStatus(401);
+    }
   }
 
   @ApiOperation({
-    summary: '카카오 로그인 콜백',
-    description: '카카오 로그인 성공 시 쿠키(/)에 토큰 담아 /으로 이동',
-  })
-  @Get('kakao/cb')
-  @UseGuards(KakaoGuard)
-  @UseInterceptors(AuthInterceptor)
-  kakaoCallback(@Res() res) {
-    return res.redirect('/');
-  }
-
-  @ApiOperation({
-    summary: '로그인',
-    description: '구글 로그인 페이지로 이동',
+    summary: '구글 로그인',
+    description:
+      '인증 서버로부터 Access Token을 받기위한 Access Code를 받아, Jwt 응답',
   })
   @ApiUnauthorizedResponse({
     description: '인증 실패 시 401 반환',
   })
-  @Get('google')
-  @UseGuards(GoogleGuard)
-  googleLogin(@Res() res) {
-    res.sendStatus(401);
-  }
-
-  @ApiOperation({
-    summary: '구글 로그인 콜백',
-    description: '구글 로그인 성공 시 쿠키(/)에 토큰 담아 /으로 이동',
+  @ApiOkResponse({
+    description: '인증 성공 시, 토큰을 바디에 담아 응답',
   })
-  @Get('google/cb')
-  @UseGuards(GoogleGuard)
-  @UseInterceptors(AuthInterceptor)
-  googleCallback(@Res() res) {
-    return res.redirect('/');
+  @ApiBody({
+    description: 'Oauth 인증에 필요한 AccessCode를 바디를 통해 전달',
+    schema: {
+      properties: {
+        code: { type: 'string' },
+      },
+    },
+  })
+  @Post('google')
+  async googleLogin(@Res() res, @Body('code') code) {
+    try {
+      const token = await this.authService.getTokenFromGoogle(code);
+      const user = await this.authService.getUserFromGoogle(token);
+      res.status(200).send(this.jwtService.sign(user)).status(200);
+    } catch (e) {
+      this.logger.error(e);
+      res.sendStatus(401).json('Login Failed');
+    }
   }
 }

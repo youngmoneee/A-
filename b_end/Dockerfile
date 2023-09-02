@@ -1,13 +1,10 @@
 FROM node:18
 
 WORKDIR /usr/src/app
-# package 복사, 또 뭐필요하지
-COPY package*.json ./
-
+COPY package*.json .
 RUN npm install
-
 COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:dev"]
+CMD ["bash", "-c", "npx prisma db push && npx prisma generate && npm run start:dev"]

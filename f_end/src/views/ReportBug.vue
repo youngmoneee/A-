@@ -15,25 +15,20 @@
 </template>
 
 <script setup lang='ts'>
-import { ref } from 'vue'
-import axios from 'axios';
-import { useAuthStore } from '@/store/auth';
+import { inject, ref } from 'vue';
+import { AxiosInstance } from 'axios';
 import router from '@/router';
 
-const { token } = useAuthStore();
 const title = ref('');
 const body = ref('');
+const $axios = inject('$axios') as AxiosInstance;
 const handleSubmit = async () => {
   if (title.value === '') return ;
-  await axios.post('api/bug/report', {
+  await $axios.post('api/bug/report', {
     title: title.value,
     body: body.value,
-  }, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
   }).then(() => router.push('/'))
-    .catch();
+    .catch(e => console.error(e));
 };
 </script>
 

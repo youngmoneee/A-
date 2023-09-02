@@ -1,52 +1,67 @@
 <template>
   <div class='index'>
-    <SideNav class='SideNav' />
-    <MainContainer class='MainContainer' />
-    <LoginModal class='LoginModal' />
+    <SideNav class = 'side' />
+    <MainContainer class = 'MainContainer' />
+    <login-modal v-if='!isAuthed' class='LoginModal' />
   </div>
 </template>
 
 <script setup lang='ts'>
 import SideNav from '@/components/SideBar.vue';
 import LoginModal from '@/components/login/LoginModal.vue';
-import MainContainer from '@/components/MainContainer.vue';
+import MainContainer from '@/views/MainContainer.vue';
+import { watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/store/auth';
-import { onBeforeMount } from 'vue';
+import { useSocketStore } from '@/store/socket';
 
-const { check } = useAuthStore();
+const { isAuthed, token } = storeToRefs(useAuthStore());
+const { setSocket, closeSocket } = useSocketStore();
 
-onBeforeMount(async () => {
-  await check();
-})
+watch(isAuthed,newIsAuthed => {
+  if (newIsAuthed) {
+    setSocket(token.value);
+  } else if (!newIsAuthed) {
+    closeSocket();
+  }
+}, {immediate: true, deep: true});
 </script>
 <style>
+body {
+  margin: 0;
+  display: flex;
+  background-image: url('@/assets/bg.png');
+  background-size: cover;
+}
+div {
+  box-sizing: border-box;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-body {
-  margin: 0px;
-  overflow: hidden;
-}
-div {
-  box-sizing: border-box;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: hidden;
 }
 .index {
   display: flex;
   flex-direction: row;
-  flex-grow: 1;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
 }
-.SideNav {
+.side {
   width: 80px;
+  flex-shrink: 0;
 }
 .MainContainer {
   flex-grow: 1;
+  overflow: hidden;
 }
 .LoginModal {
   z-index: 99;
+  position: fixed;
 }
 </style>
