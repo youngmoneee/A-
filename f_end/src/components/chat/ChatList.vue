@@ -23,10 +23,10 @@ onMounted(() => {
 
 <style scoped>
 .chat-list {
-  display: flex;
   flex-direction: column-reverse;
   flex-grow: 1;
   flex-basis: 0;
   overflow-y: scroll;
+  box-sizing: border-box;
 }
 </style>
