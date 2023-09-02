@@ -17,10 +17,11 @@
 
 <script setup lang='ts'>
 import { defineProps } from 'vue';
+import { IChat } from '@/interface/IChat';
 
 defineProps({
   item: {
-    type: Object,
+    type: IChat,
     default: null,
   },
 
@@ -30,7 +31,7 @@ defineProps({
 <style scoped>
 .chat-item {
   display: flex;
-  background-color: lightgray;
+  background: rgba(255, 255, 255, 0.00);
   padding: 5px;
   list-style-type: none;
 }
@@ -58,6 +59,7 @@ defineProps({
   word-break: break-all;
 }
 .chat-img {
+  max-width: 100%;
   max-height: 240px;
 }
 </style>
