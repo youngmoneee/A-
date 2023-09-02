@@ -5,33 +5,42 @@ services:
     build: ./b_end
     container_name: backend
     restart: always
-    ports:
-      - "3000:3000"
     volumes:
       - ./b_end:/usr/src/app
       - statics:/usr/src/app/uploads
     depends_on:
       - mongo
+      - database
+      - mosquitto
+    env_file:
+      - .env.dev
 
   frontend:
     build: ./f_end
     container_name: frontend
     restart: always
-    ports:
-      - "8080:8080"
     volumes:
       - ./f_end:/usr/src/app
+    env_file:
+      - .env.dev
 
   database:
     image: postgres:13
     container_name: database
     restart: always
     env_file:
-      - .env
+      - .env.dev
     ports:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+
+  mosquitto:
+    build: ./mosqt
+    container_name: mosquitto
+    restart: always
+    ports:
+      - "1883:1883"
 
   nginx:
     build: ./nginx
@@ -44,14 +53,6 @@ services:
       - frontend
     volumes:
       - statics:/usr/share/nginx/static
-
-  mosquitto:
-    build: ./mosqt
-    container_name: mosquitto
-    restart: always
-    ports:
-      - "1883:1883"
-      - "9001:9001"
 
   mongo:
     build: ./mongo
