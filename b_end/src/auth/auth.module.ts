@@ -6,9 +6,9 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtGuard } from './guard/jwt.guard';
-import { UserModule } from '../user/user.module';
-import { PrismaService } from '../prisma.service';
 import { HttpModule } from '@nestjs/axios';
+import { PrismaService } from '../prisma.service';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -27,8 +27,8 @@ import { HttpModule } from '@nestjs/axios';
         },
       }),
     }),
-    UserModule,
     HttpModule,
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtGuard, PrismaService],
