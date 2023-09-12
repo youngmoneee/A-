@@ -1,30 +1,24 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserDto } from '../dto/user.dto';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma.service';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { OauthProvider } from '../dto/enum.provider';
 import { ROLE } from '../dto/enum.role';
+import { IUserRepository } from '../user/repository/interface';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService,
+    @Inject('Repository') private readonly repository: IUserRepository,
     private readonly httpService: HttpService,
   ) {}
 
   async userVerify(user: UserDto): Promise<boolean> {
-    const res = await this.prismaService.user.findFirst({
-      where: {
-        id: user.id,
-      },
-    });
-    if (!res) return false;
+    if (!(await this.repository.findUserById(user.id))) return false;
     return true;
   }
 
@@ -58,34 +52,21 @@ export class AuthService {
         },
       }),
     );
-    const userData = await this.prismaService.user.findFirst({
-      where: {
-        userId: response.data.id.toString(),
-        provider: OauthProvider.KAKAO,
-      },
-    });
+    const userData = await this.repository.findUserByProvideId(
+      response.data.id.toString(),
+      OauthProvider.KAKAO,
+    );
     if (!userData) {
-      const user = await this.prismaService.user.create({
-        data: {
-          provider: OauthProvider.KAKAO,
-          userId: response.data.id.toString(),
-          userName: response.data.kakao_account?.profile?.nickname,
-          userEmail: response.data.kakao_account?.email,
-          userImage: response.data.kakao_account?.profile?.profile_image_url,
-          userRole: ROLE.USER,
-        },
+      return await this.repository.createUser({
+        provider: OauthProvider.KAKAO,
+        userId: response.data.id.toString(),
+        userName: response.data.kakao_account?.profile?.nickname,
+        userEmail: response.data.kakao_account?.email,
+        userImage: response.data.kakao_account?.profile?.profile_image_url,
+        userRole: ROLE.USER,
       });
-      return {
-        id: user.id,
-        userRole: user.userRole,
-        userName: user.userName,
-      } as UserDto;
     }
-    return {
-      id: userData.id,
-      userName: userData.userName,
-      userRole: userData.userRole,
-    } as UserDto;
+    return userData;
   }
   async getTokenFromGoogle(code: string): Promise<string> {
     const response = await firstValueFrom(
@@ -113,33 +94,20 @@ export class AuthService {
         headers: { Authorization: `Bearer ${token}` },
       }),
     );
-    const userData = await this.prismaService.user.findFirst({
-      where: {
-        userId: response.data.sub,
-        provider: OauthProvider.GOOGLE,
-      },
-    });
+    const userData = await this.repository.findUserByProvideId(
+      response.data.sub,
+      OauthProvider.GOOGLE,
+    );
     if (!userData) {
-      const user = await this.prismaService.user.create({
-        data: {
-          provider: OauthProvider.GOOGLE,
-          userId: response.data.sub,
-          userName: response.data.name,
-          userEmail: response.data.email,
-          userImage: response.data.picture,
-          userRole: ROLE.USER,
-        },
+      return await this.repository.createUser({
+        provider: OauthProvider.GOOGLE,
+        userId: response.data.sub,
+        userName: response.data.name,
+        userEmail: response.data.email,
+        userImage: response.data.picture,
+        userRole: ROLE.USER,
       });
-      return {
-        id: user.id,
-        userRole: user.userRole,
-        userName: user.userName,
-      } as UserDto;
     }
-    return {
-      id: userData.id,
-      userName: userData.userName,
-      userRole: userData.userRole,
-    } as UserDto;
+    return userData;
   }
 }
