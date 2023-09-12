@@ -1,16 +1,16 @@
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
-  NotFoundException,
   OnModuleInit,
 } from '@nestjs/common';
 import * as mqtt from 'mqtt';
 import { MqttGateway } from './mqtt.gateway';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma.service';
 import { DeviceDto } from '../dto/device.dto';
-import { UserDto } from '../dto/user.dto';
+import { IDeviceRepository } from './repository/interface';
+import { DeviceDetailDto } from '../dto/deviceDetailDto';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
@@ -18,7 +18,7 @@ export class MqttService implements OnModuleInit {
   constructor(
     private readonly mqttGateway: MqttGateway,
     private readonly configService: ConfigService,
-    private readonly prismaService: PrismaService,
+    @Inject('Repository') private readonly repository: IDeviceRepository,
   ) {}
   onModuleInit() {
     this.client = mqtt.connect(
@@ -58,124 +58,54 @@ export class MqttService implements OnModuleInit {
     });
   }
 
-  async deviceAll() {
-    try {
-      return await this.prismaService.device.findMany();
-    } catch (e) {
-      console.error(e);
-    }
+  async deviceAll(): Promise<DeviceDto[]> {
+    return await this.repository.findAll();
   }
 
   async deviceNames(userId: number): Promise<string[]> {
-    try {
-      const res = await this.prismaService.userDevice.findMany({
-        where: {
-          userId,
-        },
-        include: {
-          device: true,
-        },
-      });
-      return res.map((device) => device.device.name);
-    } catch (e) {
-      console.error(e);
-    }
+    const res = await this.repository.findDevicesByUserId(userId);
+    return res.map((device) => device.name);
   }
   async deviceRegister(userId: number, deviceName: string) {
     //  이미 관계가 존재하면 아무 일도 일어나지 않음
     if (deviceName in (await this.deviceNames(userId))) return HttpStatus.OK;
-    let device = await this.prismaService.device.findUnique({
-      where: { name: deviceName },
-    });
+    let device = await this.repository.findDeviceByName(deviceName);
     if (!device) {
       // 장치가 없으면 생성, 생성자가 admin
-      device = await this.prismaService.device.create({
-        data: {
-          name: deviceName,
-          adminId: userId,
-        },
+      device = await this.repository.createDevice({
+        name: deviceName,
+        adminId: userId,
       });
     }
 
     // 관계 생성
-    try {
-      await this.prismaService.userDevice.create({
-        data: {
-          userId,
-          deviceId: device.id,
-        },
-      });
-    } catch (e) {
-      throw new HttpException('Exist Relation', HttpStatus.CONFLICT);
-    }
+    await this.repository.createRelation({
+      userId,
+      deviceId: device.id,
+    });
 
     this.client.subscribe(`${deviceName}/#`, (err) => {
       if (err) {
         console.error('Failed to subscribe to topic:', err);
       }
     });
-
     return HttpStatus.CREATED;
   }
 
-  async getDeviceInfo(id: number): Promise<DeviceDto> {
-    try {
-      const device = await this.prismaService.device.findFirst({
-        where: {
-          id,
-        },
-        include: {
-          userDevices: {
-            select: {
-              user: {
-                select: {
-                  id: true,
-                  provider: true,
-                  userId: true,
-                  userName: true,
-                  userEmail: true,
-                  userImage: true,
-                  userRole: true,
-                },
-              },
-            },
-          },
-        },
-      });
-      const users = device.userDevices.map((userDevice) => userDevice.user);
-      const userDtos = users.map((user) => {
-        return {
-          id: user.id,
-          provider: user.provider,
-          userId: user.userId,
-          userName: user.userName,
-          userEmail: user.userEmail,
-          userImage: user.userImage,
-          userRole: user.userRole,
-        } as UserDto;
-      });
-      return {
-        id: device.id,
-        name: device.name,
-        adminId: device.adminId,
-        user: userDtos,
-      } as DeviceDto;
-    } catch (e) {
-      throw new NotFoundException(`No Device ${id}`);
-    }
+  async getDeviceInfo(id: number): Promise<DeviceDetailDto> {
+    const device = await this.repository.findDeviceById(id);
+    const users = await this.repository.findUsersByDeviceId(id);
+    return {
+      ...device,
+      users,
+    } as DeviceDetailDto;
   }
   async removeDevice(userId: number, deviceName: string) {
-    const device = await this.prismaService.device.findFirst({
-      where: {
-        name: deviceName,
-      },
-    });
+    const device = await this.repository.findDeviceByName(deviceName);
     if (!device) return;
-    await this.prismaService.userDevice.deleteMany({
-      where: {
-        userId: userId,
-        deviceId: device.id,
-      },
+    await this.repository.deleteRelation({
+      userId: userId,
+      deviceId: device.id,
     });
   }
 }
