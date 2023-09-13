@@ -31,7 +31,7 @@ const $axios = inject('$axios') as AxiosInstance;
 watch(route, async () => {
 // 페이지가 이동될 때마다 실행되는 로직
   if (!isAuthed.value) return ;
-  await $axios.get('/api/mqtt/device').then(response => {
+  await $axios.get('/api/device').then(response => {
     data.length = 0;
     response.data.forEach((value: any) => data.push(value));
     data.push('register', 'info', 'logout');
