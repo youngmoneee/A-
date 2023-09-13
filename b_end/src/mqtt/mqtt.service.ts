@@ -53,7 +53,7 @@ export class MqttService implements OnModuleInit {
   }
   remoteDevice(topic: string, msg: string) {
     //  아두이노는 너무 잘 끊겨서 qos 1로 함. retain 옵션으로 다시 구독하는 순간에 해당 메세지 전송받음
-    this.client.publish(topic, msg, { qos: 1, retain: true }, (e) => {
+    this.client.publish(topic, msg, { qos: 1, retain: false }, (e) => {
       if (e) throw new HttpException('Mqtt Error', HttpStatus.BAD_GATEWAY);
     });
   }
