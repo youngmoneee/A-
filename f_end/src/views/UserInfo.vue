@@ -47,7 +47,7 @@ onMounted(async () => {
   await $axios.get('/api/user').then(response => data.value = response.data);
 });
 const remove = async (device: string) => {
-  await $axios.delete(`api/mqtt/device/${device}`).then(() => {
+  await $axios.delete(`api/device/${device}`).then(() => {
     data.value.devices = data.value.devices.filter((i: any) => i !== device)
     router.push({ path: 'info', query: { reload: Date.now() }});
   });
