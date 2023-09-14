@@ -1,16 +1,12 @@
 name: CD workflows
 
 on:
-  pull_request:
-    branches:
-      - release
   push:
     branches:
       - release
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
