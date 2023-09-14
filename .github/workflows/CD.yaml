@@ -2,8 +2,6 @@ name: CD workflows
 
 on:
   pull_request:
-    types:
-      - closed
     branches:
       - release
   push:
@@ -36,5 +34,5 @@ jobs:
         key: ${{ secrets.GCP_SSH_KEY }}
         script: |
           cd /home/${{ secrets.GCP_ID }}/A-
-          docker-compose -f prod.docker-compose.yml down && docker volume rm a-_html
-          docker-compose -f prod.docker-compose.yml up --build -d
+          docker-compose down && docker volume rm a-_html
+          docker-compose up --build -d
