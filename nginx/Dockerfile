@@ -1,3 +1,4 @@
 FROM nginx
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY prod.conf /etc/nginx/nginx.conf
+RUN mkdir -p /etc/letsencrypt && chmod 644 -R /etc/letsencrypt

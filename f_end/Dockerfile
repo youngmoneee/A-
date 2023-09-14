@@ -1,12 +1,8 @@
-FROM node:18 as build-stage
+FROM node:18
 
-WORKDIR /usr/src/app
+WORKDIR /f_end
 
 COPY package*.json ./
-
 RUN npm install
-
 COPY . .
-
-EXPOSE 8080
-CMD ["npm", "run", "serve"]
+RUN npm run build
