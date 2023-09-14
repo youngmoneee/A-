@@ -1,10 +1,10 @@
 FROM node:18
 
-WORKDIR /usr/src/app
+WORKDIR /b_end
+
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh ./
 COPY package*.json .
-RUN npm install
+RUN npm install && chmod +x wait-for-it.sh
 COPY . .
 
-EXPOSE 3000
-
-CMD ["bash", "-c", "npx prisma db push && npx prisma generate && npm run start:dev"]
+CMD ["bash", "-c", "./wait-for-it.sh database:5432 -t 60 -- npx prisma db push && npx prisma generate && npm run build && npm run start:prod"]

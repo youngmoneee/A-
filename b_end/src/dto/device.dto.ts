@@ -1,4 +1,3 @@
-import { UserDto } from './user.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DeviceDto {
@@ -8,6 +7,4 @@ export class DeviceDto {
   name: string;
   @ApiProperty()
   adminId: number;
-  @ApiProperty()
-  user: UserDto[];
 }

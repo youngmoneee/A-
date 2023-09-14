@@ -7,8 +7,8 @@
       </div>
     </div>
     <div class='button-container'>
-      <DeviceButton command='on' :target="'/api/mqtt/device/' + props.name" />
-      <DeviceButton command='off' :target="'/api/mqtt/device/' + props.name" />
+      <DeviceButton command='on' :target="'/api/device/' + props.name" />
+      <DeviceButton command='off' :target="'/api/device/' + props.name" />
     </div>
   </div>
 </template>

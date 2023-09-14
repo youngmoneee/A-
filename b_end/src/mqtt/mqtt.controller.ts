@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpStatus,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -33,7 +32,7 @@ import { UserDto } from '../dto/user.dto';
 
 @ApiTags('Device')
 @ApiBearerAuth('accessToken')
-@Controller('mqtt')
+@Controller('device')
 @UseGuards(JwtGuard)
 export class MqttController {
   constructor(private readonly mqttService: MqttService) {}
@@ -51,7 +50,7 @@ export class MqttController {
   @ApiUnauthorizedResponse({
     description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
-  @Get('device')
+  @Get('/')
   async deviceList(@GetUser() user) {
     return await this.mqttService.deviceNames(user.id);
   }
@@ -76,7 +75,7 @@ export class MqttController {
   @ApiConflictResponse({
     description: '이미 존재하는 기기 등록 시 409 상태코드 반환',
   })
-  @Post('device')
+  @Post('/')
   async register(@GetUser() user, @Body('device') device) {
     return await this.mqttService.deviceRegister(user.id, device);
   }
@@ -96,7 +95,7 @@ export class MqttController {
     description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
   @ApiNotFoundResponse({ description: '기기가 존재하지 않을 시 404 반환' })
-  @Get('device/:device')
+  @Get('/:device')
   async deviceDetail(@Param('device', ParseIntPipe) device: number) {
     return await this.mqttService.getDeviceInfo(device);
   }
@@ -123,7 +122,7 @@ export class MqttController {
   @ApiUnauthorizedResponse({
     description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
-  @Post('device/:device')
+  @Post('/:device')
   deviceRemote(@Param('device') device: string, @Body('command') command) {
     this.mqttService.remoteDevice(`${device}/input`, command);
     return HttpStatus.NO_CONTENT;
@@ -147,7 +146,7 @@ export class MqttController {
     description: '권한이 없는 요청에 대해 UnAuthentication 반환',
   })
   @ApiBadGatewayResponse({ description: 'DB 에러 시 502 반환' })
-  @Delete('device/:device')
+  @Delete('/:device')
   async deviceRemove(
     @GetUser() user: UserDto,
     @Param('device') device: string,

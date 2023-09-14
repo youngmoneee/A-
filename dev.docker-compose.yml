@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   backend:
-    build: ./b_end
+    build:
+      context: ./b_end
+      dockerfile: Dockerfile.dev
     container_name: backend
     restart: always
     volumes:
@@ -16,7 +18,9 @@ services:
       - .env.dev
 
   frontend:
-    build: ./f_end
+    build:
+      context: ./f_end
+      dockerfile: Dockerfile.dev
     container_name: frontend
     restart: always
     volumes:
@@ -43,7 +47,9 @@ services:
       - "1883:1883"
 
   nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
     container_name: nginx
     restart: always
     ports:

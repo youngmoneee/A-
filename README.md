@@ -1,4 +1,4 @@
-# A- Beta v0.1
+# A- Beta v0.2
 
 <img width=50% src="https://github.com/youngmoneee/A-/assets/79129960/0d183115-0e85-43b8-bf2a-be9c385d6c33" />
 
@@ -135,8 +135,15 @@ GH_PERSONAL_KEY=깃허브 Personal Token
 ``` bash
 git clone https://github.com/youngmoneee/A-.git
 cd A-
-docker-compose -f prod.docker-compose.yml up
+docker-compose up
 ```
+---
+#### 실행 예시
+
+https://github.com/youngmoneee/A-/assets/79129960/d54370da-4e79-4368-b579-b6780d09898f
+
+
+
 ---  
 ## 사용 기술 스택
 <div align="center">

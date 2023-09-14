@@ -5,11 +5,11 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Chat, IChat } from '../dto/createChatDto';
-import { Logger } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { Inject } from '@nestjs/common';
 import { UserDetailDto } from '../dto/userDetail.dto';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
+import { IUserRepository } from '../user/repository/interface';
 @WebSocketGateway({
   cors: {
     origin: 'localhost',
@@ -18,14 +18,12 @@ import { ConfigService } from '@nestjs/config';
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
-  private readonly logger = new Logger(ChatGateway.name);
   constructor(
-    private readonly userService: UserService,
+    @Inject('Repository') private readonly repository: IUserRepository,
     private readonly configService: ConfigService,
   ) {}
   handleConnection(client: Socket) {
     const token = client.handshake.auth?.token as string;
-    console.log(token);
     try {
       jwt.verify(token, this.configService.get<string>('JWT_SECRET'));
     } catch (e) {
@@ -34,7 +32,8 @@ export class ChatGateway implements OnGatewayConnection {
   }
 
   async publish(chatSchema: Chat) {
-    const userDetail: UserDetailDto = await this.userService.getUserDetailById(
+    //  TODO: Redis로 유저명, 유저 이미지 캐싱하여 최적화 가능
+    const userDetail: UserDetailDto = await this.repository.findUserDetailById(
       chatSchema.user.id,
     );
     const chat: IChat = {
