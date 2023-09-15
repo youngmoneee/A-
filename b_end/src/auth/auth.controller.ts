@@ -2,9 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Logger,
   Post,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -71,12 +73,14 @@ export class AuthController {
   @Post('kakao')
   async kakaoLogin(@Res() res, @Body('code') code) {
     try {
-      const token = await this.authService.getTokenFromKakao(code);
-      const user = await this.authService.getUserFromKakao(token);
-      res.status(200).send(this.jwtService.sign(user));
+      res
+        .status(HttpStatus.OK)
+        .send(
+          this.jwtService.sign(await this.authService.getUserFromKakao(code)),
+        );
     } catch (e) {
       this.logger.error(e);
-      res.sendStatus(401);
+      throw new UnauthorizedException();
     }
   }
 
@@ -102,12 +106,14 @@ export class AuthController {
   @Post('google')
   async googleLogin(@Res() res, @Body('code') code) {
     try {
-      const token = await this.authService.getTokenFromGoogle(code);
-      const user = await this.authService.getUserFromGoogle(token);
-      res.status(200).send(this.jwtService.sign(user)).status(200);
+      res
+        .status(HttpStatus.OK)
+        .send(
+          this.jwtService.sign(await this.authService.getUserFromGoogle(code)),
+        );
     } catch (e) {
       this.logger.error(e);
-      res.sendStatus(401).json('Login Failed');
+      throw new UnauthorizedException();
     }
   }
 }
