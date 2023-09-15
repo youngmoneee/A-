@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../../src/auth/auth.service';
+import { AuthService } from '../../../src/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { HttpService } from '@nestjs/axios';
-import { ROLE } from '../../src/dto/enum.role';
+import { ROLE } from '../../../src/dto/enum.role';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;
