@@ -9,6 +9,7 @@ import { JwtGuard } from './guard/jwt.guard';
 import { HttpModule } from '@nestjs/axios';
 import { PrismaService } from '../prisma.service';
 import { UserModule } from '../user/user.module';
+import { OauthRepository } from './repository/OauthRepository';
 
 @Module({
   imports: [
@@ -31,6 +32,13 @@ import { UserModule } from '../user/user.module';
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtGuard, PrismaService],
+  providers: [
+    AuthService,
+    ConfigService,
+    JwtStrategy,
+    JwtGuard,
+    PrismaService,
+    OauthRepository,
+  ],
 })
 export class AuthModule {}
