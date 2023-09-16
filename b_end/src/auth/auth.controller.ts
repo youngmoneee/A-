@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Logger,
   Post,
   Res,
   UnauthorizedException,
@@ -26,7 +25,6 @@ import { JwtService } from '@nestjs/jwt';
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  private logger = new Logger(AuthController.name);
   constructor(
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
@@ -79,7 +77,6 @@ export class AuthController {
           this.jwtService.sign(await this.authService.getUserFromKakao(code)),
         );
     } catch (e) {
-      this.logger.error(e);
       throw new UnauthorizedException();
     }
   }
@@ -112,7 +109,6 @@ export class AuthController {
           this.jwtService.sign(await this.authService.getUserFromGoogle(code)),
         );
     } catch (e) {
-      this.logger.error(e);
       throw new UnauthorizedException();
     }
   }
