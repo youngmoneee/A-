@@ -8,9 +8,10 @@ import { ROLE } from '../../dto/enum.role';
 
 @Injectable()
 export class OauthRepository {
-  private readonly http: HttpService = new HttpService();
-
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly http: HttpService,
+  ) {}
 
   /**
    * Authorization Code를 통해 Kakao로부터 토큰 획득
