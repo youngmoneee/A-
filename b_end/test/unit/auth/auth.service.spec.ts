@@ -4,160 +4,134 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ROLE } from '../../../src/dto/enum.role';
 import { OauthRepository } from '../../../src/auth/repository/OauthRepository';
-import { UserDto } from '../../../src/dto/user.dto';
-import { CreateUserDto } from '../../../src/dto/createUserDto';
+import { mockOauthRepository } from './mocks/oauthRepository.mock';
+import { mockJwtService } from './mocks/jwtSevice.mock';
+import { mockUserRepository } from './mocks/userRepository.mock';
 import { OauthProvider } from '../../../src/dto/enum.provider';
+import { BadGatewayException } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { mockHttpRepository } from './mocks/httpRepository.mock';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;
-  const mockUserRepository = {
-    findUserById: jest.fn(),
-    findUserByProvideId: jest.fn(),
-    createUser: jest.fn(),
-  };
-  const mockOauthRepository = {
-    getUserFromKakao: jest.fn(),
-    getUserFromGoogle: jest.fn(),
-  };
-
-  const mockUser: UserDto = {
-    id: 1,
-    userName: 'mockUser',
-    userRole: ROLE.USER,
-  };
-  const kakaoCreateUser: CreateUserDto = {
-    provider: OauthProvider.KAKAO,
-    userId: 'kakao-id',
-    userName: 'kakaoman',
-    userEmail: 'zsh@duck.com',
-    userImage: 'image',
-    userRole: ROLE.USER,
-  };
-  const googleCreateUser: CreateUserDto = {
-    provider: OauthProvider.GOOGLE,
-    userId: 'google-id',
-    userName: 'googleman',
-    userEmail: 'zsh@duck.com',
-    userImage: 'image',
-    userRole: ROLE.USER,
-  };
+  const mockConfigService = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: 'Repository', useValue: mockUserRepository },
-        { provide: ConfigService, useValue: new ConfigService() },
-        { provide: JwtService, useValue: new JwtService() },
+        { provide: ConfigService, useValue: mockConfigService },
+        { provide: JwtService, useValue: mockJwtService },
         { provide: OauthRepository, useValue: mockOauthRepository },
+        { provide: HttpService, useValue: mockHttpRepository },
       ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    mockOauthRepository.getUserFromKakao.mockResolvedValue(kakaoCreateUser);
-    mockOauthRepository.getUserFromGoogle.mockResolvedValue(googleCreateUser);
-
-    mockUserRepository.findUserById.mockImplementation(async (id: number) => {
-      if (id === 0) return Promise.resolve(null);
-      return Promise.resolve({
-        id: 1,
-        userName: 'existman',
-        userRole: ROLE.USER,
-      });
-    });
-    mockUserRepository.createUser.mockImplementation(
-      async (createUser: CreateUserDto) =>
-        Promise.resolve({
-          id: 1,
-          userName: createUser.userName,
-          userRole: createUser.userRole,
-        }),
-    );
   });
   it('AuthService 생성 테스트', () => {
     expect(authService).toBeDefined();
   });
 
   describe('userVerify Test', () => {
-    afterEach(() => {
-      mockUserRepository.findUserById.mockClear();
-    });
     it('유저 존재 O -> return true', async () => {
-      mockUserRepository.findUserById.mockResolvedValueOnce(mockUser);
-      expect(await authService.userVerify(mockUser)).toBe(true);
-      expect(mockUserRepository.findUserById).toHaveBeenCalledTimes(1);
-    });
-    it('유저 존재 X -> return false', async () => {
-      mockUserRepository.findUserById.mockResolvedValueOnce(null);
       expect(
         await authService.userVerify({
-          id: 2,
+          id: 1,
+          userName: 'trueman',
+          userRole: ROLE.USER,
+        }),
+      ).toBe(true);
+    });
+    it('유저 존재 X -> return false', async () => {
+      expect(
+        await authService.userVerify({
+          id: 3,
           userRole: ROLE.USER,
           userName: 'falseman',
         }),
       ).toBe(false);
-      expect(mockUserRepository.findUserById).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('Kakao에서 유저 정보 받아오기', () => {
-    afterEach(() => {
-      mockOauthRepository.getUserFromKakao.mockClear();
-      mockUserRepository.findUserByProvideId.mockClear();
-      mockUserRepository.createUser.mockClear();
-    });
     it('불러온 유저가 존재할 시, 기존 정보 반환', async () => {
-      mockUserRepository.findUserByProvideId.mockResolvedValueOnce({
-        id: 1,
-        userName: 'existman',
-        userRole: ROLE.USER,
-      } as UserDto);
       expect(await authService.getUserFromKakao('exist')).toEqual({
-        id: 1,
-        userName: 'existman',
+        id: 2,
+        userName: 'exist',
         userRole: ROLE.USER,
       });
-      expect(mockOauthRepository.getUserFromKakao).toHaveBeenCalledTimes(1);
-      expect(mockUserRepository.findUserByProvideId).toHaveBeenCalledTimes(1);
-      expect(mockUserRepository.createUser).toHaveBeenCalledTimes(0);
     });
     it('불러온 유저가 존재하지 않을 시, 저장 후 반환', async () => {
+      mockOauthRepository.getUserFromKakao.mockResolvedValueOnce({
+        userId: 'test',
+        provider: OauthProvider.KAKAO,
+        userName: 'New-User',
+        userImage: 'test-image',
+        userEmail: 'qwe@asd.com',
+        userRole: ROLE.USER,
+      });
       mockUserRepository.findUserByProvideId.mockResolvedValueOnce(null);
-      expect(await authService.getUserFromKakao('not-exist')).toEqual(
-        await mockUserRepository.createUser(kakaoCreateUser),
-      );
-      expect(mockOauthRepository.getUserFromKakao).toHaveBeenCalledTimes(1);
-      expect(mockUserRepository.findUserByProvideId).toHaveBeenCalledTimes(1);
-      expect(mockUserRepository.createUser).toHaveBeenCalledTimes(2);
+      expect(await authService.getUserFromKakao('not-exist')).toEqual({
+        id: 3,
+        userName: 'New-User',
+        userRole: ROLE.USER,
+      });
+    });
+    describe('예외 테스트', () => {
+      it('Kakao API Post 요청 실패 시 502 반환', async () => {
+        mockHttpRepository.post.mockRejectedValueOnce(new Error('Post Error'));
+        await expect(authService.getUserFromKakao('fail')).rejects.toThrow(
+          BadGatewayException,
+        );
+      });
+      it('Kakao API Get 요청 실패 시 502 반환', async () => {
+        mockHttpRepository.get.mockRejectedValueOnce(new Error('Get Error'));
+        await expect(authService.getUserFromKakao('fail')).rejects.toThrow(
+          BadGatewayException,
+        );
+      });
     });
   });
 
   describe('Google에서 유저 정보 받아오기', () => {
-    afterEach(() => {
-      mockOauthRepository.getUserFromGoogle.mockClear();
-      mockUserRepository.findUserByProvideId.mockClear();
-      mockUserRepository.createUser.mockClear();
-    });
     it('불러온 유저가 존재할 시, 기존 정보 반환', async () => {
-      mockUserRepository.findUserByProvideId.mockResolvedValueOnce({
-        id: 1,
-        userName: 'existman',
-        userRole: ROLE.USER,
-      } as UserDto);
       expect(await authService.getUserFromGoogle('exist')).toEqual({
-        id: 1,
-        userName: 'existman',
+        id: 2,
+        userName: 'exist',
         userRole: ROLE.USER,
       });
     });
     it('불러온 유저가 존재하지 않을 시, 저장 후 반환', async () => {
+      mockOauthRepository.getUserFromGoogle.mockResolvedValueOnce({
+        userId: 'test',
+        provider: OauthProvider.GOOGLE,
+        userName: 'New-User',
+        userImage: 'test-image',
+        userEmail: 'qwe@asd.com',
+        userRole: ROLE.USER,
+      });
       mockUserRepository.findUserByProvideId.mockResolvedValueOnce(null);
-      expect(await authService.getUserFromGoogle('not-exist')).toEqual(
-        await mockUserRepository.createUser(googleCreateUser),
-      );
-      expect(mockOauthRepository.getUserFromGoogle).toHaveBeenCalledTimes(1);
-      expect(mockUserRepository.findUserByProvideId).toHaveBeenCalledTimes(1);
-      expect(mockUserRepository.createUser).toHaveBeenCalledTimes(2);
+      expect(await authService.getUserFromGoogle('not-exist')).toEqual({
+        id: 4,
+        userName: 'New-User',
+        userRole: ROLE.USER,
+      });
+    });
+    describe('예외 테스트', () => {
+      it('Google API Post 요청 실패 시 502 반환', async () => {
+        mockHttpRepository.post.mockRejectedValueOnce(new Error('Post Error'));
+        await expect(authService.getUserFromGoogle('fail')).rejects.toThrow(
+          BadGatewayException,
+        );
+      });
+      it('Google API Get 요청 실패 시 502 반환', async () => {
+        mockHttpRepository.get.mockRejectedValueOnce(new Error('Get Error'));
+        await expect(authService.getUserFromGoogle('fail')).rejects.toThrow(
+          BadGatewayException,
+        );
+      });
     });
   });
 });
