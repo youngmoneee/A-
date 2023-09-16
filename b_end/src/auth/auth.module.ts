@@ -6,7 +6,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtGuard } from './guard/jwt.guard';
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { PrismaService } from '../prisma.service';
 import { UserModule } from '../user/user.module';
 import { OauthRepository } from './repository/OauthRepository';
@@ -39,7 +39,6 @@ import { OauthRepository } from './repository/OauthRepository';
     JwtGuard,
     PrismaService,
     OauthRepository,
-    HttpService,
   ],
 })
 export class AuthModule {}
