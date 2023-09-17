@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../../../src/auth/auth.controller';
 import { AuthService } from '../../../src/auth/auth.service';
-import { mockUserRepository } from './mocks/userRepository.mock';
 import { mockJwtService } from './mocks/jwtSevice.mock';
 import { mockOauthRepository } from './mocks/oauthRepository.mock';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { OauthRepository } from '../../../src/auth/repository/OauthRepository';
 import { mockAuthService } from './mocks/auth.service.mock';
 import { UnauthorizedException } from '@nestjs/common';
+import { mockUserRepository } from '../user/mocks/mockUserRepository';
 
 describe('AuthController', () => {
   let controller: AuthController;
