@@ -6,11 +6,11 @@ import { ROLE } from '../../../src/dto/enum.role';
 import { OauthRepository } from '../../../src/auth/repository/OauthRepository';
 import { mockOauthRepository } from './mocks/oauthRepository.mock';
 import { mockJwtService } from './mocks/jwtSevice.mock';
-import { mockUserRepository } from './mocks/userRepository.mock';
 import { OauthProvider } from '../../../src/dto/enum.provider';
 import { BadGatewayException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { mockHttpRepository } from './mocks/httpRepository.mock';
+import { mockUserRepository } from '../user/mocks/mockUserRepository';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;
