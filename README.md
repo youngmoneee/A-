@@ -137,7 +137,23 @@ git clone https://github.com/youngmoneee/A-.git
 cd A-
 docker-compose up
 ```
+
+### 테스트
+
+``` bash
+npm run test
+or
+npm run test -- --verbose # 테스트 단위 출력 시
+```
+
+#### 개별 테스트
+``` bash
+npm run test:unit # 단위 테스트
+npm run test:integration # 통합 테스트
+npm run test:e2e # E2E 테스트
+```
 ---
+
 #### 실행 예시
 
 https://github.com/youngmoneee/A-/assets/79129960/d54370da-4e79-4368-b579-b6780d09898f
