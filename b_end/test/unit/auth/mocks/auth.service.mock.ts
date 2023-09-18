@@ -1,6 +1,6 @@
 import { UserDto } from '../../../../src/dto/user.dto';
 import { mockOauthRepository } from './oauthRepository.mock';
-import { mockUserRepository } from '../../user/mocks/mockUserRepository';
+import { mockUserRepository } from '../../user/mocks/user.repository.mock';
 
 export const mockAuthService = {
   userVerify: jest.fn().mockImplementation(async (user: UserDto) => {

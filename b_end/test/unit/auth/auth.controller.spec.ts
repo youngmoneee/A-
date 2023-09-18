@@ -8,9 +8,9 @@ import { ConfigService } from '@nestjs/config';
 import { OauthRepository } from '../../../src/auth/repository/OauthRepository';
 import { mockAuthService } from './mocks/auth.service.mock';
 import { UnauthorizedException } from '@nestjs/common';
-import { mockUserRepository } from '../user/mocks/mockUserRepository';
+import { mockUserRepository } from '../user/mocks/user.repository.mock';
 
-describe('AuthController', () => {
+describe('Auth Controller Test', () => {
   let controller: AuthController;
   const mockConfigService = {};
   const mockRes = {

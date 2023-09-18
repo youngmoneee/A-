@@ -10,7 +10,7 @@ import { OauthProvider } from '../../../src/dto/enum.provider';
 import { BadGatewayException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { mockHttpRepository } from './mocks/httpRepository.mock';
-import { mockUserRepository } from '../user/mocks/mockUserRepository';
+import { mockUserRepository } from '../user/mocks/user.repository.mock';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;
