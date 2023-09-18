@@ -137,7 +137,23 @@ git clone https://github.com/youngmoneee/A-.git
 cd A-
 docker-compose up
 ```
+
+### 테스트
+
+``` bash
+npm run test
+or
+npm run test -- --verbose # 테스트 단위 출력 시
+```
+
+#### 개별 테스트
+``` bash
+npm run test:unit # 단위 테스트
+npm run test:integration # 통합 테스트
+npm run test:e2e # E2E 테스트
+```
 ---
+
 #### 실행 예시
 
 https://github.com/youngmoneee/A-/assets/79129960/d54370da-4e79-4368-b579-b6780d09898f
@@ -157,6 +173,7 @@ https://github.com/youngmoneee/A-/assets/79129960/d54370da-4e79-4368-b579-b6780d
 <img src="https://img.shields.io/badge/eslint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white">
 <img src="https://img.shields.io/badge/pretier-F7B93E?style=for-the-badge&logo=prettier&logoColor=white">
 <img src="https://img.shields.io/badge/swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=white">
+<img src="https://img.shields.io/badge/jest-C21325?style=for-the-badge&logo=jest&logoColor=white">
 
 <h4>Language</h4>
 <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white">
