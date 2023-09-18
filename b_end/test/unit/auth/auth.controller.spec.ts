@@ -6,7 +6,6 @@ import { mockOauthRepository } from './mocks/oauthRepository.mock';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OauthRepository } from '../../../src/auth/repository/OauthRepository';
-import { mockAuthService } from './mocks/auth.service.mock';
 import { UnauthorizedException } from '@nestjs/common';
 import { mockUserRepository } from '../user/mocks/user.repository.mock';
 
@@ -22,7 +21,7 @@ describe('Auth Controller Test', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
-        { provide: AuthService, useValue: mockAuthService },
+        AuthService,
         { provide: JwtService, useValue: mockJwtService },
         { provide: OauthRepository, useValue: mockOauthRepository },
         { provide: 'Repository', useValue: mockUserRepository },
