@@ -6,14 +6,15 @@ import { CreateRelationDto } from '../../../../src/dto/createRelationDto';
 const mockDeviceDb: CreateDeviceDto[] = [];
 let mockUserDeviceDb: CreateRelationDto[] = [];
 export const mockDeviceRepository = {
-  findAll: jest.fn().mockResolvedValue(
-    mockDeviceDb.map((device, idx) => {
-      return {
-        id: idx,
-        name: device.name,
-        adminId: device.adminId,
-      } as DeviceDto;
-    }),
+  findAll: jest.fn().mockImplementation(async () =>
+    mockDeviceDb.map(
+      (device, idx) =>
+        ({
+          id: idx,
+          name: device.name,
+          adminId: device.adminId,
+        } as DeviceDto),
+    ),
   ),
   findDeviceById: jest.fn().mockImplementation(async (id) => {
     if (id >= mockDeviceDb.length) return null;
@@ -25,7 +26,7 @@ export const mockDeviceRepository = {
   }),
   findDeviceByName: jest
     .fn()
-    .mockResolvedValue((name) =>
+    .mockImplementation((name) =>
       mockDeviceDb.find((user) => user.name === name),
     ),
   findDevicesByUserId: jest.fn().mockImplementation(async (userId) => {
