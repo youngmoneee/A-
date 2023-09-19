@@ -26,15 +26,16 @@ export class DevicePrismaImpl implements IDeviceRepository {
   async findAll(): Promise<DeviceDto[]> {
     return await this.prismaService.device
       .findMany()
-      .then((devices) => {
-        return devices.map((device) => {
-          return {
-            id: device.id,
-            name: device.name,
-            adminId: device.adminId,
-          } as DeviceDto;
-        });
-      })
+      .then((devices) =>
+        devices.map(
+          (device) =>
+            ({
+              id: device.id,
+              name: device.name,
+              adminId: device.adminId,
+            } as DeviceDto),
+        ),
+      )
       .catch(() => {
         throw new BadGatewayException();
       });
