@@ -6,11 +6,11 @@ import { ROLE } from '../../../src/dto/enum.role';
 import { OauthRepository } from '../../../src/auth/repository/OauthRepository';
 import { mockOauthRepository } from './mocks/oauthRepository.mock';
 import { mockJwtService } from './mocks/jwtSevice.mock';
-import { mockUserRepository } from './mocks/userRepository.mock';
 import { OauthProvider } from '../../../src/dto/enum.provider';
-import { BadGatewayException } from '@nestjs/common';
+import { BadGatewayException, ConflictException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { mockHttpRepository } from './mocks/httpRepository.mock';
+import { mockUserRepository } from '../user/mocks/user.repository.mock';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;
@@ -65,7 +65,7 @@ describe('Auth Service Test', () => {
     });
     it('불러온 유저가 존재하지 않을 시, 저장 후 반환', async () => {
       mockOauthRepository.getUserFromKakao.mockResolvedValueOnce({
-        userId: 'test',
+        userId: 'not-exist',
         provider: OauthProvider.KAKAO,
         userName: 'New-User',
         userImage: 'test-image',
@@ -92,6 +92,18 @@ describe('Auth Service Test', () => {
           BadGatewayException,
         );
       });
+      it('존재하는 유저 저장 시도 시 409 반환', async () => {
+        await expect(
+          mockUserRepository.createUser({
+            userId: 'kakao',
+            userName: 'kakao-tester',
+            userRole: ROLE.USER,
+            provider: OauthProvider.KAKAO,
+            userEmail: 'qq@zz.com',
+            userImage: 'qqasd.jpg',
+          }),
+        ).rejects.toThrow(ConflictException);
+      });
     });
   });
 
@@ -105,7 +117,7 @@ describe('Auth Service Test', () => {
     });
     it('불러온 유저가 존재하지 않을 시, 저장 후 반환', async () => {
       mockOauthRepository.getUserFromGoogle.mockResolvedValueOnce({
-        userId: 'test',
+        userId: 'not-exist',
         provider: OauthProvider.GOOGLE,
         userName: 'New-User',
         userImage: 'test-image',
@@ -131,6 +143,18 @@ describe('Auth Service Test', () => {
         await expect(authService.getUserFromGoogle('fail')).rejects.toThrow(
           BadGatewayException,
         );
+      });
+      it('존재하는 유저 저장 시도 시 409 반환', async () => {
+        await expect(
+          mockUserRepository.createUser({
+            userId: 'google',
+            userName: 'google-tester',
+            userRole: ROLE.USER,
+            provider: OauthProvider.GOOGLE,
+            userEmail: 'qqq@zzz.com',
+            userImage: 'qqasdasd.jpg',
+          }),
+        ).rejects.toThrow(ConflictException);
       });
     });
   });
