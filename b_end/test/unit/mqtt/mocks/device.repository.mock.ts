@@ -30,9 +30,19 @@ export const mockDeviceRepository = {
       mockDeviceDb.find((user) => user.name === name),
     ),
   findDevicesByUserId: jest.fn().mockImplementation(async (userId) => {
-    return mockUserDeviceDb
-      .filter((userDevice) => userDevice.userId === userId)
-      .map((userDevice) => userDevice.deviceId);
+    const ud = mockUserDeviceDb
+      .filter((v) => v.userId === userId)
+      .map((device) => device.deviceId);
+    return mockDeviceDb
+      .map(
+        (device, idx) =>
+          ({
+            id: idx,
+            name: device.name,
+            adminId: device.adminId,
+          } as DeviceDto),
+      )
+      .filter((device) => ud.includes(device.id));
   }),
   createDevice: jest
     .fn()
