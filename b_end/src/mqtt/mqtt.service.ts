@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { DeviceDto } from '../dto/device.dto';
 import { IDeviceRepository } from './repository/interface';
 import { DeviceDetailDto } from '../dto/deviceDetailDto';
+import { MqttProvider } from './mqtt.provider';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
@@ -19,15 +20,10 @@ export class MqttService implements OnModuleInit {
     private readonly mqttGateway: MqttGateway,
     private readonly configService: ConfigService,
     @Inject('Repository') private readonly repository: IDeviceRepository,
+    private readonly mqttClientProvider: MqttProvider,
   ) {}
   onModuleInit() {
-    this.client = mqtt.connect(
-      'mqtt://' +
-        this.configService.get('MQTT_HOST') +
-        ':' +
-        this.configService.get('MQTT_PORT'),
-      { username: 'Nest Client' },
-    );
+    this.client = this.mqttClientProvider.createClient();
     this.client.on('connect', async () => {
       try {
         //  새로 연결 시, 등록되어있는 모든 기기 구독
@@ -68,7 +64,10 @@ export class MqttService implements OnModuleInit {
   }
   async deviceRegister(userId: number, deviceName: string) {
     //  이미 관계가 존재하면 아무 일도 일어나지 않음
-    if (deviceName in (await this.deviceNames(userId))) return HttpStatus.OK;
+    if (
+      (await this.deviceNames(userId)).find((device) => device === deviceName)
+    )
+      return HttpStatus.OK;
     let device = await this.repository.findDeviceByName(deviceName);
     if (!device) {
       // 장치가 없으면 생성, 생성자가 admin

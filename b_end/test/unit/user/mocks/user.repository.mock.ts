@@ -3,6 +3,7 @@ import { ROLE } from '../../../../src/dto/enum.role';
 import { CreateUserDto } from '../../../../src/dto/createUserDto';
 import { OauthProvider } from '../../../../src/dto/enum.provider';
 import { UserDetailDto } from '../../../../src/dto/userDetail.dto';
+import { ConflictException } from '@nestjs/common';
 
 const mockDb: CreateUserDto[] = [
   {
@@ -57,6 +58,13 @@ export const mockUserRepository = {
       } as UserDto;
     }),
   createUser: jest.fn().mockImplementation(async (data: CreateUserDto) => {
+    if (
+      mockDb.find(
+        (user) =>
+          user.provider === data.provider && user.userId === data.userId,
+      )
+    )
+      throw new ConflictException();
     mockDb.push(data);
     return {
       id: mockDb.length - 1,
@@ -65,13 +73,15 @@ export const mockUserRepository = {
     } as UserDto;
   }),
   findAllAdmin: jest.fn().mockImplementation(async () => {
-    return mockDb.map((user, idx) => {
-      if (user.userRole === ROLE.ADMIN)
-        return {
-          id: idx,
-          userName: user.userName,
-          userRole: user.userRole,
-        } as UserDto;
-    });
+    return mockDb
+      .map(
+        (user, idx) =>
+          ({
+            id: idx,
+            userName: user.userName,
+            userRole: user.userRole,
+          } as UserDto),
+      )
+      .filter((user) => user.userRole === ROLE.ADMIN);
   }),
 };
