@@ -64,7 +64,10 @@ export class MqttService implements OnModuleInit {
   }
   async deviceRegister(userId: number, deviceName: string) {
     //  이미 관계가 존재하면 아무 일도 일어나지 않음
-    if (deviceName in (await this.deviceNames(userId))) return HttpStatus.OK;
+    if (
+      (await this.deviceNames(userId)).find((device) => device === deviceName)
+    )
+      return HttpStatus.OK;
     let device = await this.repository.findDeviceByName(deviceName);
     if (!device) {
       // 장치가 없으면 생성, 생성자가 admin
