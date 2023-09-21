@@ -7,6 +7,10 @@ import { mockUserRepository } from '../../user/mocks/user.repository.mock';
 const mockDeviceDb: CreateDeviceDto[] = [];
 let mockUserDeviceDb: CreateRelationDto[] = [];
 export const mockDeviceRepository = {
+  clear: jest.fn().mockImplementation(() => {
+    mockDeviceDb.length = 0;
+    mockUserDeviceDb.length = 0;
+  }),
   findAll: jest.fn().mockImplementation(async () =>
     mockDeviceDb.map(
       (device, idx) =>
@@ -55,7 +59,9 @@ export const mockDeviceRepository = {
   findUsersByDeviceId: jest.fn().mockImplementation(async (id) => {
     const ud = mockUserDeviceDb.filter((ud) => ud.deviceId === id);
     return await Promise.all(
-      ud.map((device) => mockUserRepository.findUserById(device.userId)),
+      ud.map(
+        async (device) => await mockUserRepository.findUserById(device.userId),
+      ),
     );
   }),
   createDevice: jest
