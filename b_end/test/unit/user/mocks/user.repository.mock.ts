@@ -25,13 +25,16 @@ const mockDb: CreateUserDto[] = [
 ];
 export const mockUserRepository = {
   findUserById: jest.fn().mockImplementation(async (id) => {
-    const user = mockDb.find((user, idx) => idx === id);
-    if (!user) return null;
-    return {
-      id: id,
-      userName: user.userName,
-      userRole: user.userRole,
-    } as UserDto;
+    return mockDb
+      .map(
+        (user, id) =>
+          ({
+            id,
+            userName: user.userName,
+            userRole: user.userRole,
+          } as UserDto),
+      )
+      .find((user) => user.id === id);
   }),
   findUserDetailById: jest.fn().mockImplementation(async (id) => {
     const user = mockDb.find((user, idx) => idx === id);
