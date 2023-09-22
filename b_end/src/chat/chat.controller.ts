@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   HttpStatus,
-  Logger,
   Post,
   Req,
   UploadedFile,
@@ -34,10 +33,8 @@ export class ChatController {
     private readonly chatService: ChatService,
     private readonly chatGateway: ChatGateway,
   ) {}
-  logger = new Logger(ChatController.name);
   //@Get()
   async findAll() {
-    this.logger.debug(`Called ${this.findAll.name}`);
     return await this.chatService.findAll();
   }
 
@@ -61,7 +58,6 @@ export class ChatController {
     @UploadedFile() file?: Express.Multer.File,
     @Body('msg') msg?: string,
   ) {
-    this.logger.debug(`Called ${this.sendMessage.name}`);
     const chatSchema: Chat = {
       createdAt: new Date(),
       user,
