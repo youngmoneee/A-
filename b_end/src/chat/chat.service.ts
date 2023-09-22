@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Chat } from '../dto/createChatDto';
@@ -14,10 +14,9 @@ export class ChatService {
   async create(chatSchema: Chat): Promise<Chat> {
     try {
       const newChat = new this.chatModel(chatSchema);
-      const res = await newChat.save();
-      return res;
+      return await newChat.save();
     } catch (e) {
-      throw e;
+      throw new BadGatewayException();
     }
   }
 }
