@@ -40,6 +40,9 @@ jobs:
     - name: Npm Run Eslint
       run: npm run lint --prefix b_end
 
+    - name: Npm Run Test
+      run: npm run test --prefix b_end
+
     - name: Build Test
       run: npm run build --prefix b_end
 
