@@ -44,7 +44,7 @@ _로그인은 Kakao, Google을 통해 진행 가능합니다._
 > 서비스 제작에 기여해주세요 ⭐️
 
 ---
-## [📖 REST API DOCS](https://iot.ymon.io/api)
+## [📖 REST API DOCS](https://iot.ymon.io/api/docs)
 
 외부에서 API를 사용하기 위한 REST API에 대한 문서입니다.  
 인증은 Bearer Token을 사용하고 있으며, 로그인 후 서버로부터의 응답을 통해 토큰을 얻을 수 있습니다.  
