@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:latest
+        volumeMounts:
+          - name: conf
+            mountPath: /mosquitto/config
+            readOnly: true
+        ports:
+        - containerPort: 1883
+      volumes:
+        - name: conf
+          configMap:
+            name: mosquitto
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-broker-svc
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 1883
+    targetPort: 1883
+    protocol: TCP
+  selector:
+    app: broker
