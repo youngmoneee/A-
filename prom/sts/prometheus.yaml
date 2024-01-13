@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: server
+  namespace: monitoring
+  labels:
+    app: prom-server
+spec:
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  ruleNamespaceSelector: {}
+  ruleSelector:
+    matchLabels:
+      alert: humid
+  alerting:
+    alertmanagers:
+      - apiVersion: v2
+        name: alertmanager-operated
+        namespace: monitoring
+        port: web
+  image: prom/prometheus
+  replicas: 1
+  serviceAccountName: prom-server
