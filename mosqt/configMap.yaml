@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto
+data:
+  mosquitto.conf: |
+    user mosquitto
+
+    # MQTT 설정
+    listener 1883
+    protocol mqtt
+
+    log_dest stdout
+    #log_type information
+    log_type error
+    log_type warning
+
+    # Connection Log
+    connection_messages true
+
+    # 보안 설정 (옵션)
+    allow_anonymous true
+    #password_file /mosquitto/config/pwfile
