@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: humid
+  namespace: monitoring
+  labels:
+    prometheus: alert-rule
+spec:
+  groups:
+    - name: humid
+      rules:
+        - alert: HumidAlert70
+          expr: mqtt_hyejin{topic="humid_hyejin"} > 70.0
+          for: 5m
+          labels:
+            humid: "70"
+          annotations:
+            summary: "주의: 5분 이상 습도 70% 이상"
+            description: "현재 습도는 {{$value}}%, 화장실 창문을 엽시다."
+        - alert: HumidAlert80
+          expr: mqtt_hyejin{topic="humid_hyejin"} > 80.0
+          for: 5m
+          labels:
+            humid: "80"
+          annotations:
+            summary: "경고: 5분 이상 습도 80% 이상"
+            description: "현재 습도는 {{$value}}%, 창문을 엽시다."
