@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: humid-config
+  namespace: monitoring
+  labels:
+    alert: humid
+spec:
+  inhibitRules:
+    - sourceMatch:
+        - name: humid
+          value: '80'
+      targetMatch:
+        - name: humid
+          value: '70'
+      equal:
+        - job
+  receivers:
+    - name: telegram
+      telegramConfigs:
+        - chatID: -1001996796672
+          sendResolved: false
+          botToken:
+            name: telegram
+            key: token
+          message: |-
+            {{ range .Alerts }}
+            {{ .Annotations.summary }}
+            {{ .Annotations.description }}
+            {{ end }}
+  route:
+    groupBy: [topic]
+    groupWait: 10s
+    groupInterval: 10s
+    receiver: telegram
+    repeatInterval: 1h
